@@ -1,7 +1,7 @@
 (()=>{
 if(window.__REV_BOOTSTRAP__)return;
 window.__REV_BOOTSTRAP__=1;
-window.REV_BOOTSTRAP_VERSION='2026.08.11.1';
+window.REV_BOOTSTRAP_VERSION='2026.08.11.2';
 const RAW='https://raw.githubusercontent.com/pvtkyron/Live2dOnWebv1.0.0/master/';
 const PAGES='https://pvtkyron.github.io/Live2dOnWebv1.0.0/';
 const TG='https://t.me/project_rev';
@@ -195,6 +195,8 @@ const live2d=async()=>{
             .replace(/'tipsMessage'\s*:\s*'[^']*'/,"'tipsMessage': "+JSON.stringify(RAW+'waifu-tips.json'))
             .replace(/'homePageUrl'\s*:\s*'[^']*'/,"'homePageUrl': "+JSON.stringify(BLOG))
             .replace(/'aboutPageUrl'\s*:\s*'[^']*'/,"'aboutPageUrl': "+JSON.stringify(routeUrl('about')))
+            .replace(/#0396FF/gi,'#ff5f8f')
+            .replace(/#43CBFF/gi,'#ff9fba')
             .replace(/export\s*\{\s*showMessage\s*,\s*initModel\s*\};?/,'');
         const s=document.createElement('script');
         s.text=code;
