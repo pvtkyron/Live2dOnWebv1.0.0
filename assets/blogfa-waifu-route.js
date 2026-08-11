@@ -1,1 +1,0 @@
-(()=>{document.addEventListener('click',e=>{const h=e.target.closest&&e.target.closest('.icon-home');if(!h)return;e.preventDefault();e.stopImmediatePropagation();history.pushState({rev:'home'},'',window.REV_BLOG_URL||location.pathname);dispatchEvent(new PopStateEvent('popstate'))},true)})();
