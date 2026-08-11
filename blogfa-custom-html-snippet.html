@@ -6,12 +6,13 @@ window.__REV_BOOT_SUPERVISOR_V3__=1;
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILE='assets/blogfa-widget-v3.js',VERSION='2026.08.11.5';
 const params=new URLSearchParams(location.search);
 const native=params.get('native')==='1'||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
-const safe=params.get('revsafe')==='1'||sessionStorage.getItem('rev:disable')==='1';
+const sessionGet=k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}};
+const safe=params.get('revsafe')==='1'||sessionGet('rev:disable')==='1';
 const debug=params.get('revdebug')==='1';
 const H=window.__REV_BOOT_HEALTH__={version:VERSION,status:native?'native':safe?'safe-mode':'booting',attempt:0,source:null,lastError:null,lastReady:null,restarts:0,cacheUsed:false};
 window.REV_BOOT_HEALTH=()=>JSON.parse(JSON.stringify(H));
 if(native||safe)return;
-const CACHE='rev:supervisor:v3:widget';
+const CACHE='rev:supervisor:v3:widget',SHA_CACHE='rev:supervisor:v3:sha';
 let badge=null,monitor=null,running=false;
 const paint=(s,d='')=>{
     H.status=s;
@@ -19,7 +20,7 @@ const paint=(s,d='')=>{
     if(!badge){
         badge=document.createElement('div');
         badge.style.cssText='position:fixed;right:10px;bottom:10px;z-index:2147483647;padding:8px 10px;border:1px solid #ff5f8f;border-radius:999px;background:#090407ee;color:#ffd2df;font:700 11px/1.2 monospace;box-shadow:0 8px 30px #0008;';
-        document.body.appendChild(badge);
+        (document.body||document.documentElement).appendChild(badge);
     }
     badge.textContent='REV '+s+(d?' • '+d:'');
 };
@@ -35,9 +36,22 @@ const inject=code=>{if(!validCode(code))throw Error('invalid widget code');const
 const loadScript=(url,ms=8500)=>new Promise((resolve,reject)=>{const s=document.createElement('script');let done=false;const finish=(ok,e)=>{if(done)return;done=true;clearTimeout(t);s.onload=s.onerror=null;ok?resolve(s):reject(e||Error('script load failed'));};s.async=true;s.src=url;s.onload=()=>finish(true);s.onerror=()=>finish(false,Error('script network error'));const t=setTimeout(()=>finish(false,Error('script timeout')),ms);document.head.appendChild(s);});
 const fetchText=async(url,headers={})=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),8000);try{const r=await fetch(url,{cache:'no-store',headers,signal:c.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.text();}finally{clearTimeout(t);}};
 const apiUrl='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+FILE+'?ref=master';
-const jdUrl='https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE;
+let ref='master';
+const resolveRef=async()=>{
+    try{
+        const code=await fetchText('https://api.github.com/repos/'+OWNER+'/'+REPO+'/commits/master',{Accept:'application/vnd.github+json'});
+        const j=JSON.parse(code);
+        if(!j||!/^[a-f0-9]{40}$/i.test(j.sha||''))throw Error('invalid master sha');
+        ref=j.sha;
+        try{localStorage.setItem(SHA_CACHE,ref);}catch(e){}
+    }catch(e){
+        try{const x=localStorage.getItem(SHA_CACHE);if(x&&/^[a-f0-9]{40}$/i.test(x))ref=x;}catch(x){}
+    }
+    return ref;
+};
+const jdUrl=()=> 'https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@'+ref+'/'+FILE;
 const warmCache=async()=>{
-    try{const code=await fetchText(jdUrl+'?warm='+Date.now());if(validCode(code))cacheWrite(code);}catch(e){}
+    try{const code=await fetchText(jdUrl()+'?warm='+Date.now());if(validCode(code))cacheWrite(code);}catch(e){}
 };
 const resetRuntime=()=>{
     const host=document.getElementById('rev-project-host');if(host)host.remove();
@@ -52,7 +66,7 @@ const attempt=async()=>{
     try{
         if(step==='jsdelivr'){
             H.source='jsdelivr-master';
-            await loadScript(jdUrl+'?v='+VERSION.replace(/\D/g,''));
+            await loadScript(jdUrl()+'?v='+VERSION.replace(/\D/g,''));
         }else if(step==='api'){
             resetRuntime();H.source='github-api';
             const code=await fetchText(apiUrl,{Accept:'application/vnd.github.raw+json'});if(!validCode(code))throw Error('api payload invalid');cacheWrite(code);inject(code);
@@ -61,7 +75,7 @@ const attempt=async()=>{
             const x=cacheRead();if(!x)throw Error('no valid local cache');H.cacheUsed=true;inject(x.code);
         }else{
             resetRuntime();H.source='jsdelivr-retry';
-            const code=await fetchText(jdUrl+'?retry='+Date.now());if(!validCode(code))throw Error('retry payload invalid');cacheWrite(code);inject(code);
+            const code=await fetchText(jdUrl()+'?retry='+Date.now());if(!validCode(code))throw Error('retry payload invalid');cacheWrite(code);inject(code);
         }
         const ok=await waitReady(12000);if(!ok)throw Error('widget did not become healthy');
         H.lastReady=Date.now();H.lastError=null;paint('HEALTHY',H.source);warmCache();return true;
@@ -69,6 +83,7 @@ const attempt=async()=>{
 };
 const boot=async()=>{
     H.attempt=0;
+    if(navigator.onLine!==false)await resolveRef();
     for(let i=0;i<4;i++){if(await attempt())break;await sleep(700*(i+1));}
     if(!ready()){resetRuntime();paint('FAILSAFE','Blogfa untouched');}
     if(monitor)clearInterval(monitor);
