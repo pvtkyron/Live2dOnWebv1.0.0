@@ -1,2 +1,124 @@
-<!-- Project Rev: append this to Blogfa > Custom HTML/JavaScript. Do not replace the Blogfa template. -->
-<script defer src="https://cdn.jsdelivr.net/gh/pvtkyron/Live2dOnWebv1.0.0@master/assets/blogfa-widget.js"></script>
+<!-- Project Rev resilient supervisor: append to Blogfa > Custom HTML/JavaScript. Do not replace the Blogfa template. -->
+<script>
+(()=>{
+if(window.__REV_BOOT_SUPERVISOR__)return;
+window.__REV_BOOT_SUPERVISOR__=1;
+const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILE='assets/blogfa-widget-v2.js';
+const params=new URLSearchParams(location.search);
+const native=params.get('native')==='1'||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
+const debug=params.get('revdebug')==='1';
+const H=window.__REV_BOOT_HEALTH__={status:native?'native':'booting',attempt:0,source:null,lastError:null,lastReady:null,restarts:0};
+window.REV_BOOT_HEALTH=()=>JSON.parse(JSON.stringify(H));
+if(native)return;
+let badge=null,monitor=null,running=false;
+const paint=(s,d='')=>{
+    H.status=s;
+    if(!debug)return;
+    if(!badge){
+        badge=document.createElement('div');
+        badge.style.cssText='position:fixed;right:10px;bottom:10px;z-index:2147483647;padding:8px 10px;border:1px solid #ff5f8f;border-radius:999px;background:#090407ee;color:#ffd2df;font:700 11px/1.2 monospace;box-shadow:0 8px 30px #0008;';
+        document.body.appendChild(badge);
+    }
+    badge.textContent='REV '+s+(d?' • '+d:'');
+};
+const error=e=>{
+    H.lastError=String(e&&e.message||e);
+    paint('ERROR',H.lastError.slice(0,42));
+};
+const ready=()=>window.__REV_WIDGET_READY__&&window.__REV_WIDGET_HEALTH__&&window.__REV_WIDGET_HEALTH__.status==='healthy';
+const waitReady=ms=>new Promise(resolve=>{
+    const start=Date.now();
+    const tick=()=>{
+        if(ready())return resolve(true);
+        if(window.__REV_WIDGET_HEALTH__&&window.__REV_WIDGET_HEALTH__.status==='failed-safe')return resolve(false);
+        if(Date.now()-start>=ms)return resolve(false);
+        setTimeout(tick,250);
+    };
+    tick();
+});
+const loadScript=(url,ms=9000)=>new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    let done=false;
+    const finish=(ok,e)=>{
+        if(done)return;
+        done=true;
+        clearTimeout(t);
+        s.onload=s.onerror=null;
+        ok?resolve(s):reject(e||Error('script load failed'));
+    };
+    s.async=true;
+    s.src=url;
+    s.onload=()=>finish(true);
+    s.onerror=()=>finish(false,Error('script network error'));
+    const t=setTimeout(()=>finish(false,Error('script timeout')),ms);
+    document.head.appendChild(s);
+});
+const apiUrl='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+FILE+'?ref=master';
+const loadFromApi=async()=>{
+    const c=new AbortController();
+    const t=setTimeout(()=>c.abort(),8000);
+    try{
+        const r=await fetch(apiUrl,{cache:'no-store',headers:{Accept:'application/vnd.github.raw+json'},signal:c.signal});
+        if(!r.ok)throw Error('api HTTP '+r.status);
+        const code=await r.text();
+        if(code.length<5000||!code.includes('__REV_BLOGFA_WIDGET_V2__'))throw Error('api payload invalid');
+        const s=document.createElement('script');
+        s.text=code+'\n//# sourceURL=rev-blogfa-widget-api.js';
+        document.head.appendChild(s);
+        return s;
+    }finally{clearTimeout(t);}
+};
+const resetRuntime=()=>{
+    const host=document.getElementById('rev-project-host');
+    if(host)host.remove();
+    try{delete window.__REV_BLOGFA_WIDGET_V2__;}catch(e){window.__REV_BLOGFA_WIDGET_V2__=0;}
+    try{delete window.__REV_WIDGET_READY__;}catch(e){window.__REV_WIDGET_READY__=0;}
+};
+const attempt=async()=>{
+    if(running||ready())return ready();
+    running=true;
+    H.attempt++;
+    paint('BOOT','#'+H.attempt);
+    try{
+        if(H.attempt===1){
+            H.source='jsdelivr-master';
+            await loadScript('https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE+'?v=20260811');
+        }else if(H.attempt===2){
+            resetRuntime();
+            H.source='github-api';
+            await loadFromApi();
+        }else{
+            resetRuntime();
+            H.source='jsdelivr-retry';
+            await loadScript('https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE+'?retry='+Date.now());
+        }
+        const ok=await waitReady(11000);
+        if(!ok)throw Error('widget did not become healthy');
+        H.lastReady=Date.now();
+        paint('HEALTHY',H.source);
+        return true;
+    }catch(e){
+        error(e);
+        return false;
+    }finally{running=false;}
+};
+const boot=async()=>{
+    for(let i=0;i<3;i++){
+        if(await attempt())break;
+        await new Promise(r=>setTimeout(r,900*(i+1)));
+    }
+    if(!ready())paint('FAILSAFE','Blogfa untouched');
+    if(monitor)clearInterval(monitor);
+    monitor=setInterval(async()=>{
+        if(ready()){paint('HEALTHY',H.source);return;}
+        if(H.restarts>=2)return paint('FAILSAFE','recovery limit');
+        H.restarts++;
+        H.attempt=1;
+        paint('RETRY','#'+H.restarts);
+        resetRuntime();
+        await attempt();
+    },20000);
+};
+boot();
+})();
+</script>
