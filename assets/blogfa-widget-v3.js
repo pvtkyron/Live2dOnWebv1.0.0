@@ -5,7 +5,9 @@ const VERSION='2026.08.11.5';
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0';
 const BLOG=(location.origin+location.pathname).replace(/\/$/,'');
 const params=new URLSearchParams(location.search);
-const safe=params.get('revsafe')==='1'||sessionStorage.getItem('rev:disable')==='1';
+const sessionGet=k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}};
+const sessionSet=(k,v)=>{try{sessionStorage.setItem(k,v);return true;}catch(e){return false;}};
+const safe=params.get('revsafe')==='1'||sessionGet('rev:disable')==='1';
 const native=params.get('native')==='1'||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
 const health=window.__REV_WIDGET_HEALTH__={version:VERSION,status:'booting',route:null,source:null,manifest:null,checks:[],failures:[],attempts:0,recoveries:0,cacheHits:0,mountedAt:null,lastCheck:null};
 window.REV_WIDGET_HEALTH=()=>JSON.parse(JSON.stringify(health));
@@ -215,9 +217,10 @@ const mount=async(isRecovery=false)=>{
     }catch(e){rollback(e);throw e;}
 };
 window.REV_WIDGET_RECOVER=()=>{if(terminal(health.status))return false;scheduleRecovery('manual');return true;};
-window.REV_WIDGET_DISABLE_SESSION=()=>{sessionStorage.setItem('rev:disable','1');rollback('session disabled');health.status='safe-mode';stopWatchers();return true;};
+window.REV_WIDGET_DISABLE_SESSION=()=>{sessionSet('rev:disable','1');rollback('session disabled');health.status='safe-mode';stopWatchers();return true;};
 window.REV_WIDGET_CLEAR_CACHE=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith(LS)).forEach(k=>localStorage.removeItem(k));return true;}catch(e){return false;}};
+const domReady=()=>document.body?Promise.resolve():new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
 addEventListener('online',()=>{if(health.status!=='healthy'&&!terminal(health.status))scheduleRecovery('online');});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')watchdogCheck();});
-mount(false).catch(e=>{rollback(e);health.status='failed-safe';console.error('[ProjectRev widget v3]',e);});
+domReady().then(()=>mount(false)).catch(e=>{rollback(e);health.status='failed-safe';console.error('[ProjectRev widget v3]',e);});
 })();
