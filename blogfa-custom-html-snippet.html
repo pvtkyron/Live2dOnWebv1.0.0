@@ -1,15 +1,17 @@
-<!-- Project Rev resilient supervisor: append to Blogfa > Custom HTML/JavaScript. Do not replace the Blogfa template. -->
+<!-- Project Rev v3 resilient supervisor: append to Blogfa Custom HTML/JavaScript. -->
 <script>
 (()=>{
-if(window.__REV_BOOT_SUPERVISOR__)return;
-window.__REV_BOOT_SUPERVISOR__=1;
-const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILE='assets/blogfa-widget-v2.js';
+if(window.__REV_BOOT_SUPERVISOR_V3__)return;
+window.__REV_BOOT_SUPERVISOR_V3__=1;
+const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILE='assets/blogfa-widget-v3.js',VERSION='2026.08.11.5';
 const params=new URLSearchParams(location.search);
 const native=params.get('native')==='1'||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
+const safe=params.get('revsafe')==='1'||sessionStorage.getItem('rev:disable')==='1';
 const debug=params.get('revdebug')==='1';
-const H=window.__REV_BOOT_HEALTH__={status:native?'native':'booting',attempt:0,source:null,lastError:null,lastReady:null,restarts:0};
+const H=window.__REV_BOOT_HEALTH__={version:VERSION,status:native?'native':safe?'safe-mode':'booting',attempt:0,source:null,lastError:null,lastReady:null,restarts:0,cacheUsed:false};
 window.REV_BOOT_HEALTH=()=>JSON.parse(JSON.stringify(H));
-if(native)return;
+if(native||safe)return;
+const CACHE='rev:supervisor:v3:widget';
 let badge=null,monitor=null,running=false;
 const paint=(s,d='')=>{
     H.status=s;
@@ -21,104 +23,64 @@ const paint=(s,d='')=>{
     }
     badge.textContent='REV '+s+(d?' • '+d:'');
 };
-const error=e=>{
-    H.lastError=String(e&&e.message||e);
-    paint('ERROR',H.lastError.slice(0,42));
-};
-const ready=()=>window.__REV_WIDGET_READY__&&window.__REV_WIDGET_HEALTH__&&window.__REV_WIDGET_HEALTH__.status==='healthy';
-const waitReady=ms=>new Promise(resolve=>{
-    const start=Date.now();
-    const tick=()=>{
-        if(ready())return resolve(true);
-        if(window.__REV_WIDGET_HEALTH__&&window.__REV_WIDGET_HEALTH__.status==='failed-safe')return resolve(false);
-        if(Date.now()-start>=ms)return resolve(false);
-        setTimeout(tick,250);
-    };
-    tick();
-});
-const loadScript=(url,ms=9000)=>new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    let done=false;
-    const finish=(ok,e)=>{
-        if(done)return;
-        done=true;
-        clearTimeout(t);
-        s.onload=s.onerror=null;
-        ok?resolve(s):reject(e||Error('script load failed'));
-    };
-    s.async=true;
-    s.src=url;
-    s.onload=()=>finish(true);
-    s.onerror=()=>finish(false,Error('script network error'));
-    const t=setTimeout(()=>finish(false,Error('script timeout')),ms);
-    document.head.appendChild(s);
-});
+const error=e=>{H.lastError=String(e&&e.message||e);paint('ERROR',H.lastError.slice(0,44));};
+const ready=()=>!!window.__REV_WIDGET_READY__&&window.__REV_WIDGET_HEALTH__&&window.__REV_WIDGET_HEALTH__.status==='healthy';
+const terminal=()=>window.__REV_WIDGET_HEALTH__&&['native','disabled','safe-mode'].includes(window.__REV_WIDGET_HEALTH__.status);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const waitReady=ms=>new Promise(resolve=>{const start=Date.now();const tick=()=>{if(ready())return resolve(true);if(terminal())return resolve(false);if(Date.now()-start>=ms)return resolve(false);setTimeout(tick,250);};tick();});
+const validCode=code=>typeof code==='string'&&code.length>10000&&code.includes('__REV_BLOGFA_WIDGET_V3__')&&code.includes("const VERSION='"+VERSION+"'");
+const cacheRead=()=>{try{const x=JSON.parse(localStorage.getItem(CACHE)||'null');if(!x||!validCode(x.code))return null;return x;}catch(e){return null;}};
+const cacheWrite=code=>{if(!validCode(code))return false;try{localStorage.setItem(CACHE,JSON.stringify({at:Date.now(),code}));return true;}catch(e){return false;}};
+const inject=code=>{if(!validCode(code))throw Error('invalid widget code');const s=document.createElement('script');s.text=code+'\n//# sourceURL=rev-blogfa-widget-v3.js';document.head.appendChild(s);return s;};
+const loadScript=(url,ms=8500)=>new Promise((resolve,reject)=>{const s=document.createElement('script');let done=false;const finish=(ok,e)=>{if(done)return;done=true;clearTimeout(t);s.onload=s.onerror=null;ok?resolve(s):reject(e||Error('script load failed'));};s.async=true;s.src=url;s.onload=()=>finish(true);s.onerror=()=>finish(false,Error('script network error'));const t=setTimeout(()=>finish(false,Error('script timeout')),ms);document.head.appendChild(s);});
+const fetchText=async(url,headers={})=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),8000);try{const r=await fetch(url,{cache:'no-store',headers,signal:c.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.text();}finally{clearTimeout(t);}};
 const apiUrl='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+FILE+'?ref=master';
-const loadFromApi=async()=>{
-    const c=new AbortController();
-    const t=setTimeout(()=>c.abort(),8000);
-    try{
-        const r=await fetch(apiUrl,{cache:'no-store',headers:{Accept:'application/vnd.github.raw+json'},signal:c.signal});
-        if(!r.ok)throw Error('api HTTP '+r.status);
-        const code=await r.text();
-        if(code.length<5000||!code.includes('__REV_BLOGFA_WIDGET_V2__'))throw Error('api payload invalid');
-        const s=document.createElement('script');
-        s.text=code+'\n//# sourceURL=rev-blogfa-widget-api.js';
-        document.head.appendChild(s);
-        return s;
-    }finally{clearTimeout(t);}
+const jdUrl='https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE;
+const warmCache=async()=>{
+    try{const code=await fetchText(jdUrl+'?warm='+Date.now());if(validCode(code))cacheWrite(code);}catch(e){}
 };
 const resetRuntime=()=>{
-    const host=document.getElementById('rev-project-host');
-    if(host)host.remove();
-    try{delete window.__REV_BLOGFA_WIDGET_V2__;}catch(e){window.__REV_BLOGFA_WIDGET_V2__=0;}
+    const host=document.getElementById('rev-project-host');if(host)host.remove();
+    try{delete window.__REV_BLOGFA_WIDGET_V3__;}catch(e){window.__REV_BLOGFA_WIDGET_V3__=0;}
     try{delete window.__REV_WIDGET_READY__;}catch(e){window.__REV_WIDGET_READY__=0;}
+    try{delete window.__REV_WIDGET_HEALTH__;}catch(e){window.__REV_WIDGET_HEALTH__=null;}
 };
+const order=()=>navigator.onLine===false?['cache','jsdelivr','api','retry']:['jsdelivr','api','cache','retry'];
 const attempt=async()=>{
     if(running||ready())return ready();
-    running=true;
-    H.attempt++;
-    paint('BOOT','#'+H.attempt);
+    running=true;H.attempt++;const step=order()[Math.min(H.attempt-1,3)];paint('BOOT',step);
     try{
-        if(H.attempt===1){
+        if(step==='jsdelivr'){
             H.source='jsdelivr-master';
-            await loadScript('https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE+'?v=20260811');
-        }else if(H.attempt===2){
-            resetRuntime();
-            H.source='github-api';
-            await loadFromApi();
+            await loadScript(jdUrl+'?v='+VERSION.replace(/\D/g,''));
+        }else if(step==='api'){
+            resetRuntime();H.source='github-api';
+            const code=await fetchText(apiUrl,{Accept:'application/vnd.github.raw+json'});if(!validCode(code))throw Error('api payload invalid');cacheWrite(code);inject(code);
+        }else if(step==='cache'){
+            resetRuntime();H.source='last-known-good';
+            const x=cacheRead();if(!x)throw Error('no valid local cache');H.cacheUsed=true;inject(x.code);
         }else{
-            resetRuntime();
-            H.source='jsdelivr-retry';
-            await loadScript('https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+FILE+'?retry='+Date.now());
+            resetRuntime();H.source='jsdelivr-retry';
+            const code=await fetchText(jdUrl+'?retry='+Date.now());if(!validCode(code))throw Error('retry payload invalid');cacheWrite(code);inject(code);
         }
-        const ok=await waitReady(11000);
-        if(!ok)throw Error('widget did not become healthy');
-        H.lastReady=Date.now();
-        paint('HEALTHY',H.source);
-        return true;
-    }catch(e){
-        error(e);
-        return false;
-    }finally{running=false;}
+        const ok=await waitReady(12000);if(!ok)throw Error('widget did not become healthy');
+        H.lastReady=Date.now();H.lastError=null;paint('HEALTHY',H.source);warmCache();return true;
+    }catch(e){error(e);return false;}finally{running=false;}
 };
 const boot=async()=>{
-    for(let i=0;i<3;i++){
-        if(await attempt())break;
-        await new Promise(r=>setTimeout(r,900*(i+1)));
-    }
-    if(!ready())paint('FAILSAFE','Blogfa untouched');
+    H.attempt=0;
+    for(let i=0;i<4;i++){if(await attempt())break;await sleep(700*(i+1));}
+    if(!ready()){resetRuntime();paint('FAILSAFE','Blogfa untouched');}
     if(monitor)clearInterval(monitor);
     monitor=setInterval(async()=>{
         if(ready()){paint('HEALTHY',H.source);return;}
-        if(H.restarts>=2)return paint('FAILSAFE','recovery limit');
-        H.restarts++;
-        H.attempt=1;
-        paint('RETRY','#'+H.restarts);
-        resetRuntime();
-        await attempt();
-    },20000);
+        if(terminal())return paint('SAFE',window.__REV_WIDGET_HEALTH__.status);
+        if(H.restarts>=3)return paint('FAILSAFE','recovery limit');
+        H.restarts++;paint('RETRY','#'+H.restarts);resetRuntime();H.attempt=0;await attempt();
+    },15000);
 };
+window.REV_BOOT_RECOVER=async()=>{resetRuntime();H.restarts=0;H.attempt=0;await boot();return ready();};
+window.REV_BOOT_CLEAR_CACHE=()=>{try{localStorage.removeItem(CACHE);if(window.REV_WIDGET_CLEAR_CACHE)window.REV_WIDGET_CLEAR_CACHE();return true;}catch(e){return false;}};
 boot();
 })();
 </script>
