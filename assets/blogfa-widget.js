@@ -131,6 +131,20 @@ const mount=async()=>{
     exit.textContent='NOVA6 BLOG';
     shadow.append(style,shell,exit);
     document.body.appendChild(host);
+    const menu=shadow.querySelector('[data-menu-toggle]');
+    const nav=shadow.querySelector('#site-nav')||shadow.querySelector('.topbar nav');
+    if(menu&&nav)menu.addEventListener('click',()=>{
+        const on=nav.classList.toggle('nav-active');
+        menu.setAttribute('aria-expanded',String(on));
+        menu.textContent=on?'×':'☰';
+    });
+    const lang=shadow.querySelector('[data-lang-toggle]');
+    if(lang)lang.addEventListener('click',()=>{
+        const fa=lang.dataset.revFa!=='1';
+        lang.dataset.revFa=fa?'1':'0';
+        lang.textContent=fa?'EN / FA':'FA / EN';
+        shadow.querySelectorAll('.fa-copy').forEach(n=>n.style.display=fa?'block':'none');
+    });
     const title=doc.title||'Project Rev Market';
     if(title)document.title=title;
 };
