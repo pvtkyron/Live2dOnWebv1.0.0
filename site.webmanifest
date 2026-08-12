@@ -1,0 +1,12 @@
+{
+  "name":"Project Rev Market",
+  "short_name":"Project Rev",
+  "description":"GitHub-fed Project Rev storefront, journal and buyer guides.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#07070b",
+  "theme_color":"#ff4f8b",
+  "lang":"en",
+  "dir":"ltr"
+}
