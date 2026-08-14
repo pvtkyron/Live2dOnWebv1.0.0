@@ -38,7 +38,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'live2d_bundle.js',
-        publicPath: './dist/'
+        publicPath: './dist/',
+        hashFunction: 'sha256'
     },
     devServer: {
         contentBase: path.resolve(__dirname, '.'),
