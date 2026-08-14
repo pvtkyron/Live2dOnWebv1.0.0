@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose a focused improvement to Project Rev without mixing unrelated surfaces.
+title: "[Feature]: "
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Storefront UX / content
+        - Blogfa compatibility
+        - Live2D experience
+        - Build / CI / maintenance
+        - SEO / discovery
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user or maintenance problem before proposing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Keep the proposal scoped and explain the expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Compatibility / failure boundaries
+      description: Note effects on static routes, Blogfa fallback, Live2D, generated bundles, or SEO where relevant.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I checked existing issues and pull requests for the same proposal.
+          required: true
+        - label: This request does not contain credentials, tokens, or private user data.
+          required: true
