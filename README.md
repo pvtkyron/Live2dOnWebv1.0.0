@@ -65,6 +65,12 @@ Create a production build:
 npm run build:prod
 ```
 
+Validate local HTML asset links and sitemap routes without using GitHub Actions:
+
+```bash
+npm run check:static
+```
+
 Serve the static repository locally on port 5001:
 
 ```bash
@@ -77,6 +83,8 @@ Pull requests are checked by two complementary workflows:
 
 - **Static integrity** validates local `href`/`src` targets and sitemap routes while treating unresolved Blogfa `<-...->` placeholders as runtime tokens rather than filesystem paths.
 - **CI** installs the locked dependency tree, audits production dependencies, builds the production Live2D bundle, verifies the generated artifact, checks JavaScript syntax and parses runtime JSON/config files.
+
+The same static integrity check can be run locally with `npm run check:static`, which makes broken links catchable before a push.
 
 The legacy Webpack toolchain still needs the OpenSSL legacy provider for the production-build step on current Node. That compatibility flag is intentionally scoped to that step until the build toolchain itself is upgraded.
 
