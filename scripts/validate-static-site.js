@@ -16,7 +16,7 @@ function walk(dir){
 }
 
 function localTarget(from,value){
-  if(!value||/^(?:https?:|mailto:|tel:|data:|javascript:|#)/i.test(value))return null;
+  if(!value||/<-[^>]+->/.test(value)||/^(?:https?:|mailto:|tel:|data:|javascript:|#)/i.test(value))return null;
   let clean=value.split('#')[0].split('?')[0];
   if(!clean)return null;
   try{clean=decodeURIComponent(clean);}catch{}
