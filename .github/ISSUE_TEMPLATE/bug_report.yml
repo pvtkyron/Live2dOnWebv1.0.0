@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a reproducible storefront, Blogfa, Live2D, routing, or build problem.
+title: "[Bug]: "
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Static storefront / public route
+        - Blogfa bootstrap / supervisor
+        - Live2D runtime / model
+        - Build / CI / repository tooling
+        - SEO / sitemap / metadata
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: route
+    attributes:
+      label: Page or route
+      description: Give the affected route or file when known.
+      placeholder: "e.g. /shop.html or assets/blogfa-supervisor.js"
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Keep the steps minimal and deterministic.
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include exact console/build errors when useful. Remove tokens, credentials, cookies, or private data.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser/OS or Node/npm versions, depending on the problem.
+      placeholder: "e.g. Chrome 151 / Windows 11, or Node 22 / npm 10"
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I checked that this is not already reported in an open issue.
+          required: true
+        - label: I removed secrets, credentials, session tokens, and private user data from this report.
+          required: true
