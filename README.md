@@ -1,6 +1,11 @@
 # Project Rev / Live2D on Web
 
+[![CI](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/ci.yml/badge.svg)](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/ci.yml)
+[![Static integrity](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/static-integrity.yml/badge.svg)](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/static-integrity.yml)
+
 Project Rev is a static-first storefront and editorial site with an optional Live2D presentation layer and a resilient Blogfa compatibility path.
+
+This repository is a maintained fork of [`Konata09/Live2dOnWeb`](https://github.com/Konata09/Live2dOnWeb). It keeps the upstream Live2D SDK/runtime foundation while adding the Project Rev storefront, Blogfa isolation layer, public routes/SEO surface, automated validation and maintenance documentation.
 
 The repository is designed around one rule: durable content and navigation should keep working even when optional enhancement layers fail.
 
@@ -65,6 +70,15 @@ Serve the static repository locally on port 5001:
 ```bash
 npm run serve
 ```
+
+## Quality gates
+
+Pull requests are checked by two complementary workflows:
+
+- **Static integrity** validates local `href`/`src` targets and sitemap routes while treating unresolved Blogfa `<-...->` placeholders as runtime tokens rather than filesystem paths.
+- **CI** installs the locked dependency tree, audits production dependencies, builds the production Live2D bundle, verifies the generated artifact, checks JavaScript syntax and parses runtime JSON/config files.
+
+The legacy Webpack toolchain still needs the OpenSSL legacy provider for the production-build step on current Node. That compatibility flag is intentionally scoped to that step until the build toolchain itself is upgraded.
 
 ## Runtime principles
 
