@@ -37,8 +37,6 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
 
       - name: Build production bundle
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
         run: npm run build:prod
 
       - name: Verify generated bundle
