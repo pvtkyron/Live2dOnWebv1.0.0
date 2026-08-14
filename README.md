@@ -78,6 +78,7 @@ SEO-facing files such as `robots.txt`, `sitemap.xml` and `site.webmanifest` are 
 - [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — publish, validation and rollback flow.
 - [`docs/BLOGFA_RUNTIME.md`](docs/BLOGFA_RUNTIME.md) — Blogfa placeholders, boot order and failure isolation.
 - [`docs/LIVE2D_MAINTENANCE.md`](docs/LIVE2D_MAINTENANCE.md) — SDK/model/bundle maintenance rules.
+- [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) — layered diagnosis for storefront, Live2D, Blogfa and SEO failures.
 - [`SECURITY.md`](SECURITY.md) — security reporting and client-side secret guidance.
 
 ## Change discipline
