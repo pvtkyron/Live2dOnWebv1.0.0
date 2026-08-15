@@ -5,7 +5,7 @@
 
 Project Rev is a static-first storefront and editorial site with an optional Live2D presentation layer and a resilient Blogfa compatibility path.
 
-This repository is a maintained fork of [`Konata09/Live2dOnWeb`](https://github.com/Konata09/Live2dOnWeb). It keeps the upstream Live2D SDK/runtime foundation while adding the Project Rev storefront, Blogfa isolation layer, public routes/SEO surface, automated validation and maintenance documentation.
+Project Rev is maintained as an independent repository and product surface. Its Live2D runtime lineage originates from [`Konata09/Live2dOnWeb`](https://github.com/Konata09/Live2dOnWeb), while the Project Rev storefront, Blogfa isolation layer, public routes/SEO surface, automated validation and maintenance documentation are developed here as project-owned layers.
 
 The repository is designed around one rule: durable content and navigation should keep working even when optional enhancement layers fail.
 
