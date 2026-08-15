@@ -21,7 +21,10 @@
     "build:prod": "webpack --mode production",
     "check:static": "node scripts/validate-static-site.js",
     "serve": "serve -p 5001",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "cf:dev": "npx wrangler@latest dev",
+    "cf:deploy": "npx wrangler@latest deploy",
+    "cf:dry-run": "npx wrangler@latest deploy --dry-run"
   },
   "author": "Konata",
   "devDependencies": {
