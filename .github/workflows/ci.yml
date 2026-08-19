@@ -61,3 +61,6 @@ jobs:
 
       - name: 日本語ローカライズを検証
         run: npm run check:ja
+
+      - name: Blogfaレスポンシブを検証
+        run: npm run check:blogfa
