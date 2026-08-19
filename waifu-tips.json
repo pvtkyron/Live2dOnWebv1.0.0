@@ -1,418 +1,133 @@
 {
   "waifu": {
-    "console_open_msg": [
-      "Haha, you opened the console. Trying to peek at my secrets?"
-    ],
-    "copy_message": [
-      "What are you copying there? If you repost, remember to credit the source~"
-    ],
-    "screenshot_message": [
-      "Did you get the shot? Do I look cute enough?"
-    ],
-    "hidden_message": [
-      "Captain’s supply: always pity, captain’s drops: always zero."
-    ],
-    "load_rand_textures": [
-      "I don’t have any other outfits yet…",
-      "Do you like my new outfit?"
-    ],
+    "console_open_msg": ["ふふ、コンソールまで開いたの？ 私の秘密をのぞく気？"],
+    "copy_message": ["何をコピーしてるの？ 転載するなら出典はちゃんと書いてね〜"],
+    "screenshot_message": ["撮れた？ ちゃんと可愛く写ってる？"],
+    "hidden_message": ["艦長の補給：いつも天井。艦長のドロップ：いつもゼロ。"],
+    "load_rand_textures": ["まだ別の衣装を持ってないの…", "新しい衣装、似合ってる？"],
     "hour_tips": {
-      "t5-7": [
-        "Good morning! The early hours decide the whole day. A beautiful new day is starting."
-      ],
-      "t7-11": [
-        "Good morning! Is work going well? Don’t sit too long, get up and stretch a little~"
-      ],
-      "t11-14": [
-        "It’s noon already. You’ve worked all morning, time for lunch!"
-      ],
-      "t14-17": [
-        "Afternoons make people sleepy… have you finished today’s exercise goals?"
-      ],
-      "t17-19": [
-        "Evening time! The sunset outside is beautiful, isn’t it?"
-      ],
-      "t19-21": [
-        "Good evening, how was your day today?"
-      ],
-      "t21-23": [
-        "It’s already this late, you should rest soon. Good night~"
-      ],
-      "t23-5": [
-        "Are you a night owl? Staying up this late… can you wake up tomorrow?"
-      ],
-      "default": [
-        "Hey~ come play with me!"
-      ]
+      "t5-7": ["おはよう！ 朝の時間が一日を決めるよ。新しい一日の始まりだね。"],
+      "t7-11": ["おはよう！ 作業は順調？ ずっと座りっぱなしにしないで、少し立って伸びよう〜"],
+      "t11-14": ["もうお昼だよ。午前中ずっと頑張ったんだから、ごはんにしよう！"],
+      "t14-17": ["午後って眠くなるよね… 今日の運動目標、もう終わった？"],
+      "t17-19": ["夕方だよ！ 外の夕焼け、きれいじゃない？"],
+      "t19-21": ["こんばんは。今日はどんな一日だった？"],
+      "t21-23": ["もうこんな時間。そろそろ休んだほうがいいよ。おやすみ〜"],
+      "t23-5": ["夜更かしさん？ こんな時間まで起きてて…明日起きられるの？"],
+      "default": ["ねえ〜、一緒に遊ぼうよ！"]
     },
     "referrer_message": {
-      "localhost": [
-        "Welcome to <span style=\"color:DarkBlue;\">『",
-        "』</span>",
-        " - "
-      ],
-      "baidu": [
-        "Hello! Friend from Baidu search<br>Did you find me by searching <span style=\"color:DarkBlue;\">",
-        "</span>?"
-      ],
-      "so": [
-        "Hello! Friend from 360 Search<br>Did you find me by searching <span style=\"color:DarkBlue;\">",
-        "</span>?"
-      ],
-      "google": [
-        "Hello! Friend from Google search<br>Welcome to <span style=\"color:DarkBlue;\">『",
-        "』</span>",
-        " - "
-      ],
-      "default": [
-        "Hello! Friend from <span style=\"color:DarkBlue;\">",
-        "</span>"
-      ],
-      "none": [
-        "Welcome to <span style=\"color:DarkBlue;\">『",
-        "』</span>",
-        " - "
-      ]
+      "localhost": ["<span style=\"color:DarkBlue;\">『", "』</span>へようこそ", " - "],
+      "baidu": ["Baidu検索から来てくれたんだね<br><span style=\"color:DarkBlue;\">", "</span>で私を見つけたの？"],
+      "so": ["360検索から来てくれたんだね<br><span style=\"color:DarkBlue;\">", "</span>で私を見つけたの？"],
+      "google": ["Google検索からようこそ<br><span style=\"color:DarkBlue;\">『", "』</span>へどうぞ", " - "],
+      "default": ["<span style=\"color:DarkBlue;\">", "</span>から来てくれたんだね。ようこそ！"],
+      "none": ["<span style=\"color:DarkBlue;\">『", "』</span>へようこそ", " - "]
     },
     "referrer_hostname": {
-      "note6.konata.tech": [
-        "You really can’t stay away from me, huh? ^_^"
-      ],
-      "note.konata.tech": [
-        "You really can’t stay away from me, huh? ^_^"
-      ]
+      "note6.konata.tech": ["ほんと、私から離れられないんだね？ ^_^"],
+      "note.konata.tech": ["ほんと、私から離れられないんだね？ ^_^" ]
     },
     "model_message": {},
     "hitokoto_api_message": {
-      "lwl12.com": [
-        "This quote comes from <span style=\"color:DarkBlue;\">『{source}』</span>",
-        ", submitted by <span style=\"color:DarkBlue;\">{creator}</span>",
-        "."
-      ],
-      "fghrsh.net": [
-        "This quote is from <span style=\"color:DarkBlue;\">『{source}』</span>, collected by <span style=\"color:DarkBlue;\">FGHRSH</span> on {date}!"
-      ],
-      "jinrishici.com": [
-        "This poem is from <span style=\"color:DarkBlue;\">《{title}》</span>, written by {dynasty} poet {author}."
-      ],
-      "hitokoto.cn": [
-        "This quote comes from <span style=\"color:DarkBlue;\">『{source}』</span>, submitted by <span style=\"color:DarkBlue;\">{creator}</span> on hitokoto.cn."
-      ]
+      "lwl12.com": ["この言葉は<span style=\"color:DarkBlue;\">『{source}』</span>から", "、投稿者は<span style=\"color:DarkBlue;\">{creator}</span>", "。"],
+      "fghrsh.net": ["この言葉は<span style=\"color:DarkBlue;\">『{source}』</span>から。{date}に<span style=\"color:DarkBlue;\">FGHRSH</span>が収録しました。"],
+      "jinrishici.com": ["この詩は<span style=\"color:DarkBlue;\">《{title}》</span>から。{dynasty}の詩人 {author} による作品です。"],
+      "hitokoto.cn": ["この言葉は<span style=\"color:DarkBlue;\">『{source}』</span>から。hitokoto.cnで<span style=\"color:DarkBlue;\">{creator}</span>さんが投稿しました。"]
     }
   },
   "mouseover": [
-    {
-      "selector": ".container a[href^=\"http\"]",
-      "text": [
-        "Want to check out <span style=\"color:DarkBlue;\">{text}</span>?"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-home",
-      "text": [
-        "Click here to go back to the home page~"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-message",
-      "text": [
-        "Every word, every smile. Every line, a tiny little heartbeat."
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-next",
-      "text": [
-        "Hmm… want to switch the waifu?"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-camera",
-      "text": [
-        "Want to take a commemorative photo?"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-about",
-      "text": [
-        "Here you can see some info about me~"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-cross",
-      "text": [
-        "Captain’s supply: always pity, captain’s drops: always zero."
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-volumeup",
-      "text": [
-        "Can’t hear the music?"
-      ]
-    },
-    {
-      "selector": ".waifu-tool>.icon-volumedown",
-      "text": [
-        "Is the music too loud?"
-      ]
-    },
-    {
-      "selector": "#floating-toc-btn",
-      "text": [
-        "Too much scrolling? Click here to show the table of contents."
-      ]
-    },
-    {
-      "selector": "#searchIcon",
-      "text": [
-        "Can’t find what you want? Try searching~"
-      ]
-    },
-    {
-      "selector": "#backTop",
-      "text": [
-        "Let’s head back to the top."
-      ]
-    },
-    {
-      "selector": ".mute",
-      "text": [
-        "Click here to mute."
-      ]
-    },
-    {
-      "selector": "a[href^=\"/\"]>.fa-angle-left",
-      "text": [
-        "Go to the previous page?"
-      ]
-    },
-    {
-      "selector": "a[href^=\"/page/\"]>.fa-angle-right",
-      "text": [
-        "Go to the next page?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Want to leave a comment?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Take care of your eyes when it’s late at night."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Scan with your phone to keep reading, it’s really convenient."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "What do you feel like ranting about?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "How should I call you?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Leave your email, or you’ll be a faceless guest~"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Where’s your home? Maybe I’ll visit someday."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Fill this in carefully, spam comments are forbidden."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Want to insert an emoji?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "Ready to [Submit]? First comments need approval, please wait patiently~"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "You can click images here to zoom in."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "This is the menu."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "You can adjust the <span style=\"color:DarkBlue;\">playback progress</span> here."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "You can adjust the <span style=\"color:DarkBlue;\">volume</span> here."
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "What’s inside the <span style=\"color:DarkBlue;\">playlist</span>?"
-      ]
-    },
-    {
-      "selector": "#comment",
-      "text": [
-        "If there are <span style=\"color:DarkBlue;\">lyrics</span>, you can sing along."
-      ]
-    },
-    {
-      "selector": "#live2d2,#live2d4",
-      "text": [
-        "Hey! Are you trying to get yourself in trouble?",
-        "Hey! Don’t get in the way!",
-        "Hey! Go away!",
-        "So annoying, take your hands off!",
-        "Hey! I bite, you know!",
-        "Huh? Want to get punched flat?",
-        "What do you think you’re doing? Hmph!",
-        "Shameless… enjoying this that much?",
-        "Captain, your hand isn’t following orders again.",
-        "Nope, nope! You can’t touch there!",
-        "Hahaha, stop, that tickles!",
-        "Don’t think I don’t know what you’re thinking…",
-        "Honestly… you… ah, forget it."
-      ]
-    }
+    {"selector":".container a[href^=\"http\"]","text":["<span style=\"color:DarkBlue;\">{text}</span>を見に行く？"]},
+    {"selector":".waifu-tool>.icon-home","text":["ここを押すとホームに戻れるよ〜"]},
+    {"selector":".waifu-tool>.icon-message","text":["ひとつの言葉、ひとつの笑顔。ひとつの行に、小さな鼓動。"]},
+    {"selector":".waifu-tool>.icon-next","text":["ん〜…別の子に切り替えてみる？"]},
+    {"selector":".waifu-tool>.icon-camera","text":["記念写真、撮ってみる？"]},
+    {"selector":".waifu-tool>.icon-about","text":["ここで私のことを少し見られるよ〜"]},
+    {"selector":".waifu-tool>.icon-cross","text":["艦長の補給：いつも天井。艦長のドロップ：いつもゼロ。"]},
+    {"selector":".waifu-tool>.icon-volumeup","text":["音楽、聞こえない？"]},
+    {"selector":".waifu-tool>.icon-volumedown","text":["音楽、大きすぎる？"]},
+    {"selector":"#floating-toc-btn","text":["スクロールしすぎた？ ここで目次を開けるよ。"]},
+    {"selector":"#searchIcon","text":["欲しいものが見つからない？ 検索してみよう〜"]},
+    {"selector":"#backTop","text":["いちばん上まで戻ろう。"]},
+    {"selector":".mute","text":["ここでミュートできるよ。"]},
+    {"selector":"a[href^=\"/\"]>.fa-angle-left","text":["前のページに戻る？"]},
+    {"selector":"a[href^=\"/page/\"]>.fa-angle-right","text":["次のページへ行く？"]},
+    {"selector":"#comment","text":["コメントを残していく？"]},
+    {"selector":"#comment","text":["夜遅いときは目をいたわってね。"]},
+    {"selector":"#comment","text":["スマホで読み続けたいなら、スキャンすると便利だよ。"]},
+    {"selector":"#comment","text":["今日は何をぶちまけたい気分？"]},
+    {"selector":"#comment","text":["なんて呼べばいい？"]},
+    {"selector":"#comment","text":["メールを残してくれないと、正体不明のゲストになっちゃうよ〜"]},
+    {"selector":"#comment","text":["どこに住んでるの？ いつか遊びに行っちゃうかも。"]},
+    {"selector":"#comment","text":["ここはちゃんと入力してね。スパムコメントは禁止！"]},
+    {"selector":"#comment","text":["絵文字を入れる？"]},
+    {"selector":"#comment","text":["[送信]する準備できた？ 最初のコメントは承認が必要だから、少し待ってね〜"]},
+    {"selector":"#comment","text":["画像はクリックすると拡大できるよ。"]},
+    {"selector":"#comment","text":["ここがメニューだよ。"]},
+    {"selector":"#comment","text":["ここで<span style=\"color:DarkBlue;\">再生位置</span>を調整できるよ。"]},
+    {"selector":"#comment","text":["ここで<span style=\"color:DarkBlue;\">音量</span>を調整できるよ。"]},
+    {"selector":"#comment","text":["<span style=\"color:DarkBlue;\">プレイリスト</span>には何が入ってるんだろう？"]},
+    {"selector":"#comment","text":["<span style=\"color:DarkBlue;\">歌詞</span>があったら、一緒に歌えるね。"]},
+    {"selector":"#live2d2,#live2d4","text":[
+      "ちょっと！ 自分から面倒ごとに突っ込んでるの？",
+      "ちょっと、邪魔しないで！",
+      "もう、あっち行って！",
+      "しつこいなぁ、手を離して！",
+      "噛むよ？ 本当に。",
+      "え？ ぺちゃんこにされたいの？",
+      "何してるのよ。ふんっ！",
+      "恥ずかしくないの…そんなに楽しい？",
+      "艦長、また手が命令を聞いてないみたい。",
+      "だめだめ！ そこは触っちゃだめ！",
+      "あはは、やめて、くすぐったい！",
+      "何を考えてるか分からないと思ってるの…？",
+      "もう…あなたって…はぁ、なんでもない。"
+    ]}
   ],
   "click": [
-    {
-      "selector": "#live2d2,#live2d4",
-      "text": [
-        "Unknown object detected, radar to full power.",
-        "Potential threat detected, entering alert mode.",
-        "Heavy Bunny 19C: unknown intrusion detected in core area.",
-        "Heavy Bunny 19C, fire!",
-        "Uh-oh, the enemy found Heavy Bunny’s blind spot.",
-        "Hmph, another dangerous guy detected.",
-        "Full-area scan online.",
-        "Dangerous one, don’t come any closer.",
-        "This is Bronya’s neural core. Random touching is forbidden.",
-        "Malicious behavior detected, affection level decreased.",
-        "Captain, don’t think that disabling Heavy Bunny means Bronya has no other ways to attack.",
-        "Central computer root access obtained. Starting a live broadcast of the Captain’s actions.",
-        "Bronya cannot parse the Captain’s behavior.",
-        "Defense in this area has been strengthened. No second chances.",
-        "Bronya has received an unknown command.",
-        "File HP3074 says headpats mean comfort, encouragement, or affection.<br>So what exactly is the Captain trying to express?",
-        "Abnormal neural waves detected… seems like an unknown emotional change.",
-        "Captain, what should Bronya do now?",
-        "Captain, Bronya detects rising body temperature.",
-        "Captain’s temperature: 36.8°C, 0.1 above standard, still normal.",
-        "Defense system has marked the Captain as friendly. No attacks will be launched.",
-        "…Mom? Why did Bronya suddenly think of Mom?",
-        "Captain, Bronya doesn’t even know what expression to use right now.",
-        "Captain, for some unknown reason Bronya’s body temperature keeps rising.",
-        "Captain, if this keeps up, Bronya’s neural core will break.",
-        "Looks like Heavy Bunny 19C likes the Captain too.",
-        "Bronya’s defense mechanisms will be permanently disabled for the Captain~",
-        "Captain… are you trying to make Bronya take off the leg armor?"
-      ]
-    }
+    {"selector":"#live2d2,#live2d4","text":[
+      "未確認物体を検知。レーダー出力最大。",
+      "潜在的脅威を検知。警戒モードへ移行します。",
+      "重装ウサギ19C：中枢エリアへの未確認侵入を検知。",
+      "重装ウサギ19C、発射。",
+      "まずい。敵が重装ウサギの死角を見つけたみたい。",
+      "ふん、また危険人物を検知。",
+      "全域スキャン、オンライン。",
+      "危険人物。これ以上近づかないで。",
+      "ここはブローニャの神経中枢です。無断で触れることは禁止されています。",
+      "不適切な行動を検知。好感度が低下しました。",
+      "艦長、重装ウサギを止めればブローニャに攻撃手段がないと思わないでください。",
+      "中央コンピューターのroot権限を取得。艦長の行動をライブ配信します。",
+      "ブローニャには艦長の行動を解析できません。",
+      "この区域の防御を強化しました。次はありません。",
+      "ブローニャは未確認の命令を受信しました。",
+      "ファイルHP3074によると、頭を撫でる行為は安心、励まし、愛情を意味するそうです。<br>では艦長は、何を伝えようとしているのですか？",
+      "異常な神経波を検知…未知の感情変化の可能性があります。",
+      "艦長、ブローニャは今どうすればいいですか？",
+      "艦長、ブローニャの体温上昇を検知しました。",
+      "艦長の体温：36.8℃。基準より0.1高いですが正常範囲です。",
+      "防御システムは艦長を友軍として登録しました。攻撃は行いません。",
+      "…ママ？ どうして急にママのことを思い出したんだろう。",
+      "艦長、ブローニャは今どんな表情をすればいいのか分かりません。",
+      "艦長、原因不明ですがブローニャの体温が上がり続けています。",
+      "艦長、このままだとブローニャの神経中枢が壊れてしまいます。",
+      "重装ウサギ19Cも艦長のことが好きみたいです。",
+      "艦長に対するブローニャの防御機構を永久停止します〜",
+      "艦長…ブローニャに脚部装甲を外させようとしているのですか？"
+    ]}
   ],
   "seasons": [
-    {
-      "date": "01/01",
-      "text": [
-        "It’s <span style=\"color:DarkBlue;\">New Year’s Day</span>! A new year has begun, it’s now {year}~"
-      ]
-    },
-    {
-      "date": "02/14",
-      "text": [
-        "Another <span style=\"color:DarkBlue;\">Valentine’s Day</span>… did you find someone in {year}?"
-      ]
-    },
-    {
-      "date": "03/08",
-      "text": [
-        "Today is <span style=\"color:DarkBlue;\">International Women’s Day</span>!"
-      ]
-    },
-    {
-      "date": "03/12",
-      "text": [
-        "Today is <span style=\"color:DarkBlue;\">Arbor Day</span>, remember to protect the environment."
-      ]
-    },
-    {
-      "date": "04/01",
-      "text": [
-        "Let me tell you a secret~ <span style=\"background-color:#34495e;\">Today is April Fools’ Day, don’t get tricked~</span>"
-      ]
-    },
-    {
-      "date": "05/01",
-      "text": [
-        "Today is <span style=\"color:DarkBlue;\">Labor Day</span>. Have you planned where to go for the holiday?"
-      ]
-    },
-    {
-      "date": "06/01",
-      "text": [
-        "It’s <span style=\"color:DarkBlue;\">Children’s Day</span>! Happy times are always short… if only we never had to grow up."
-      ]
-    },
-    {
-      "date": "09/03",
-      "text": [
-        "Today is the <span style=\"color:DarkBlue;\">Victory Day of the Chinese People’s War of Resistance Against Japanese Aggression</span>. Remember history, honor the fallen, cherish peace, and create the future."
-      ]
-    },
-    {
-      "date": "09/10",
-      "text": [
-        "Today is <span style=\"color:DarkBlue;\">Teachers’ Day</span>. Don’t forget to greet your teachers~"
-      ]
-    },
-    {
-      "date": "10/01",
-      "text": [
-        "It’s <span style=\"color:DarkBlue;\">National Day</span>. The PRC has already been founded for 71 years."
-      ]
-    },
-    {
-      "date": "11/05-11/12",
-      "text": [
-        "This year’s <span style=\"color:DarkBlue;\">Singles’ Day</span>… who are you spending it with?"
-      ]
-    },
-    {
-      "date": "12/20-12/31",
-      "text": [
-        "It’s <span style=\"color:DarkBlue;\">Christmas</span> season. I bet you’re out shopping again~"
-      ]
-    }
+    {"date":"01/01","text":["<span style=\"color:DarkBlue;\">お正月</span>だよ！ 新しい一年、{year}年の始まり〜"]},
+    {"date":"02/14","text":["今年も<span style=\"color:DarkBlue;\">バレンタインデー</span>…{year}年は一緒に過ごす人、見つかった？"]},
+    {"date":"03/08","text":["今日は<span style=\"color:DarkBlue;\">国際女性デー</span>だよ！"]},
+    {"date":"03/12","text":["今日は<span style=\"color:DarkBlue;\">植樹の日</span>。環境を大切にしようね。"]},
+    {"date":"04/01","text":["秘密を教えてあげる〜 <span style=\"background-color:#34495e;\">今日はエイプリルフール。だまされないでね〜</span>"]},
+    {"date":"05/01","text":["今日は<span style=\"color:DarkBlue;\">メーデー</span>。休日の予定は決まった？"]},
+    {"date":"06/01","text":["今日は<span style=\"color:DarkBlue;\">国際子どもの日</span>！ 楽しい時間ってすぐ終わっちゃうね…ずっと子どもでいられたらいいのに。"]},
+    {"date":"09/03","text":["今日は<span style=\"color:DarkBlue;\">中国人民抗日戦争勝利記念日</span>です。歴史を忘れず、犠牲者を悼み、平和を大切にしましょう。"]},
+    {"date":"09/10","text":["今日は<span style=\"color:DarkBlue;\">教師節</span>。先生にひとこと挨拶してね〜"]},
+    {"date":"10/01","text":["今日は<span style=\"color:DarkBlue;\">国慶節</span>です。穏やかな一日になりますように。"]},
+    {"date":"11/05-11/12","text":["今年の<span style=\"color:DarkBlue;\">独身の日</span>…誰と過ごすの？"]},
+    {"date":"12/20-12/31","text":["<span style=\"color:DarkBlue;\">クリスマス</span>の季節だね。また買い物に出てるんでしょ〜"]}
   ]
 }

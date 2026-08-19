@@ -1,19 +1,20 @@
-## What changed
+## 変更内容
 
-<!-- Summarize the focused change. -->
+<!-- 目的を絞った変更内容を要約してください。 -->
 
-## Why
+## 理由
 
-<!-- Explain the problem or improvement this PR addresses. -->
+<!-- このPRが解決する問題/改善点を説明してください。 -->
 
-## Validation
+## 検証
 
-- [ ] Affected pages/routes were checked in a browser.
-- [ ] Edited JavaScript/TypeScript parses or builds successfully when applicable.
-- [ ] Blogfa fallback behavior is preserved when integration files are touched.
-- [ ] Sitemap/canonical metadata was reviewed when public routes changed.
-- [ ] Generated `dist/` output is included only when intentionally regenerated.
+- [ ] 影響するページ/ルートをブラウザで確認した。
+- [ ] 編集したJavaScript/TypeScriptが必要に応じてparse/buildできる。
+- [ ] Blogfa連携変更時、fallbackを維持している。
+- [ ] 公開ルート変更時、sitemap/canonical metadataを確認した。
+- [ ] `dist/`生成物は意図的に再生成した場合だけ含めている。
+- [ ] 新規の公開テキストは日本語UIと整合している。
 
-## Scope
+## スコープ
 
-- [ ] This PR avoids unrelated formatting, generated files or runtime changes.
+- [ ] 無関係なformat、生成物、runtime変更を混ぜていない。

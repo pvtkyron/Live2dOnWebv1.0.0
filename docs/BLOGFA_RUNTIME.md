@@ -1,24 +1,22 @@
-# Blogfa Runtime Contract
+# Blogfa ランタイム契約
 
-## Purpose
+## 目的
 
-The Blogfa integration lets a native Blogfa page opt into the GitHub-controlled Project Rev storefront without making the native page depend on that enhancement for basic availability.
+Blogfaネイティブページを基本可用性の依存先にせず、GitHub管理のProject Revストアを拡張として追加します。
 
-The key rule is simple: **an unhealthy enhancement must not destroy a healthy Blogfa page**.
+基本ルール: **不健全な拡張が健全なBlogfaページを壊してはいけない。**
 
-## Main files
+## 主なファイル
 
-- `blogfa-final-template.html` — native Blogfa template surface.
-- `blogfa-custom-html-snippet.html` — stable custom HTML/JavaScript entry point.
-- `assets/blogfa-bootstrap.js` — storefront bootstrap logic.
-- `assets/blogfa-supervisor.js` — health supervision and fallback ownership.
-- `assets/blogfa-live2d-addon.js` — optional mascot layer.
-- `assets/blogfa-runtime-manifest.json` — runtime policy/threshold configuration.
-- `assets/blogfa-widget*.js` — isolated widget revisions retained for compatibility/history.
+- `blogfa-final-template.html` — Blogfaネイティブテンプレート。
+- `blogfa-custom-html-snippet.html` — 安定したカスタムHTML/JS入口。
+- `assets/blogfa-bootstrap.js` — ストアbootstrap。
+- `assets/blogfa-supervisor.js` — health監視とfallback所有。
+- `assets/blogfa-live2d-addon.js` — 任意のマスコット層。
+- `assets/blogfa-runtime-manifest.json` — runtime policy/threshold。
+- `assets/blogfa-widget*.js` — 互換/履歴用widget。
 
-## Runtime placeholders
-
-Blogfa tokens such as these are resolved by Blogfa at runtime and are **not local repository paths**:
+## ランタイムplaceholder
 
 ```text
 <-BlogUrl->
@@ -27,11 +25,9 @@ Blogfa tokens such as these are resolved by Blogfa at runtime and are **not loca
 <-PostTitle->
 ```
 
-Static validators and refactoring tools must ignore unresolved `<-...->` placeholders when checking filesystem targets.
+これらはBlogfaが実行時に解決するトークンで、ローカルファイルパスではありません。静的validatorは未解決`<-...->`をfilesystem targetとして扱わないでください。
 
-## Boot order
-
-The intended dependency order is:
+## 起動順
 
 ```text
 native Blogfa page
@@ -41,52 +37,37 @@ stable custom snippet
 storefront bootstrap/supervisor
   ↓
 health check
-  ├─ healthy → expose Project Rev layer
-  └─ unhealthy → leave native Blogfa visible
+  ├─ healthy → Project Rev layerを公開
+  └─ unhealthy → native Blogfaを維持
   ↓
 optional Live2D addon
 ```
 
-The Live2D mascot is never allowed to become a hard dependency of the storefront.
+Live2Dをストアの必須依存にしてはいけません。
 
-## Failure isolation
+## 障害分離
 
-A production-safe Blogfa change should preserve all of these properties:
+- ネットワーク失敗でもnative contentを表示する。
+- malformedなremote contentでページを置換しない。
+- Live2D失敗はマスコット層だけ劣化させる。
+- cached/last-known-goodは検証が通る場合だけ利用する。
+- safe/native bypassを維持する。
+- watchdog復旧でreload loopを作らない。
 
-- network failure leaves native content visible;
-- malformed remote content does not replace the page;
-- Live2D failure degrades only the mascot layer;
-- cached/last-known-good data may be used only when its validation still passes;
-- safe/native bypass remains available;
-- watchdog recovery never creates a reload loop.
+## 変更チェックリスト
 
-## Change checklist
+1. Blogfa template tag/placeholderを正確に維持する。
+2. native pageへ漏れるglobal CSSを避ける。
+3. mount/commitを可能な限りtransactionalにする。
+4. 外部fetchには必ず失敗経路を用意する。
+5. cleanupで所有するobserver/timer/listenerを解放する。
+6. JavaScriptブロック/remote source unavailableでもnative pageを試す。
+7. Live2D unavailableでもストアを試す。
 
-When editing Blogfa-facing files:
+## デバッグ
 
-1. preserve Blogfa template tags and placeholders exactly;
-2. avoid global CSS that can leak into the native page;
-3. keep mount/commit behavior transactional where possible;
-4. verify every external fetch has a failure path;
-5. verify the cleanup path removes observers/timers/listeners owned by the enhancement;
-6. test the native page with JavaScript blocked or the remote source unavailable;
-7. test the storefront with Live2D intentionally unavailable.
+利用可能なら`REV_SYSTEM_HEALTH()`と`REV_LIVE2D_HEALTH()`を使用します。空白/部分表示では、native template → bootstrap → asset preflight → mount → supervisor health → Live2Dの順で、最初に失敗した境界を直してください。
 
-## Debugging
+## セキュリティ境界
 
-Use the runtime health helpers exposed by the integration when present, including `REV_SYSTEM_HEALTH()` and `REV_LIVE2D_HEALTH()`.
-
-When debugging a blank or partial page, determine which boundary failed before changing anything:
-
-1. Blogfa rendered the native template;
-2. bootstrap source loaded;
-3. storefront assets passed preflight;
-4. storefront mounted;
-5. supervisor accepted health;
-6. Live2D initialized.
-
-Fix the earliest failing boundary rather than adding retries everywhere.
-
-## Security boundary
-
-Never embed GitHub tokens, private repository credentials, session cookies or secret API keys in the Blogfa template or client-side bootstrap. Everything delivered to the browser must be treated as public.
+GitHub token、private repository credential、session cookie、secret API keyをBlogfa template/client bootstrapへ埋め込まないでください。ブラウザへ届くものはすべて公開情報として扱います。

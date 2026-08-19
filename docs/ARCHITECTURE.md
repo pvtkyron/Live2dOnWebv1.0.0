@@ -1,12 +1,13 @@
-# Project Rev Architecture
+# Project Rev アーキテクチャ
 
-## System shape
+## システム構成
 
-Project Rev is intentionally static-first. The durable storefront is a set of ordinary HTML routes backed by shared CSS/JavaScript, while Blogfa support and Live2D are optional enhancement layers.
+Project Revは意図的に静的ファーストです。長く残すストアは通常HTML + 共通CSS/JavaScriptで構成し、BlogfaとLive2Dは任意の拡張レイヤーとして分離します。
 
 ```text
 public HTML routes
   ├─ assets/store.css
+  ├─ assets/ja.css
   ├─ assets/store.js
   ├─ assets/waifu-route.js
   ├─ dist/live2d_bundle.js
@@ -20,56 +21,41 @@ Blogfa surface
   └─ assets/blogfa-live2d-addon.js
 ```
 
-## Public route layer
+## 公開ルート層
 
-The primary pages (`index.html`, `shop.html`, `journal.html`, `about.html`, `faq.html`) work as independent documents. Product and editorial routes live below `products/` and `posts/`.
+`index.html`、`shop.html`、`journal.html`、`about.html`、`faq.html`は独立した文書として動きます。製品/記事ルートは`products/`と`posts/`以下です。
 
-This layer owns durable copy, canonical URLs, crawlable navigation, metadata and the fallback experience when optional JavaScript cannot run.
+この層が日本語の長期コンテンツ、canonical URL、クロール可能なナビゲーション、metadata、JavaScript失敗時のfallbackを所有します。
 
-## Shared storefront runtime
+## 共通ストアランタイム
 
-`assets/store.css` defines the visual system and responsive behavior. `assets/store.js` adds progressive enhancements such as:
+`assets/store.css`がビジュアル/レスポンシブ動作を定義し、`assets/ja.css`が日本語向けタイポグラフィを補正します。`assets/store.js`は次を追加します。
 
-- mobile navigation state;
-- current-page semantics;
-- language-copy visibility;
-- catalog filtering;
-- reveal effects;
-- reading progress;
-- lightweight counters and pointer effects.
+- モバイルナビゲーション状態
+- 現在ページのsemantics
+- `data-filter`/`data-type`ベースの言語非依存カタログフィルター
+- reveal効果
+- 読書進捗
+- 軽量カウンター/ポインター効果
 
-The runtime should fail soft: blocking storage, reduced-motion preferences or missing browser APIs must not make the static pages unusable.
+ストレージ制限、reduced-motion、ブラウザAPI不足があっても静的ページは利用可能でなければなりません。
 
-## Live2D layer
+## Live2Dレイヤー
 
-`dist/live2d_bundle.js` is the browser bundle generated from the Live2D source tree. Model data lives under `model/`, while `waifu-tips.js`, `waifu-tips.json` and `assets/waifu-route.js` connect the mascot UI to the current page.
+`dist/live2d_bundle.js`はLive2Dソースから生成したブラウザバンドルです。モデルは`model/`、日本語マスコットメッセージは`waifu-tips.json`、UI接続は`waifu-tips.js`と`assets/waifu-route.js`が担当します。
 
-Generated bundles should be treated separately from source changes whenever practical so reviews can distinguish authored code from build output.
+## Blogfa互換レイヤー
 
-## Blogfa compatibility layer
+Blogfa連携はcanonical静的サイトから隔離されています。bootstrap/supervisorは前提条件が健全な場合だけGitHub管理ストアを読み込み、失敗時はBlogfaネイティブ面を残します。
 
-Blogfa integration is deliberately isolated from the canonical static site. The bootstrap/supervisor files load the GitHub-controlled storefront only when prerequisites are healthy and leave the native Blogfa page available as a fallback.
+契約:
 
-The compatibility contract is:
+1. canonical GitHubルートがBlogfaを必須にしない。
+2. 任意リモートアセット失敗でBlogfaネイティブ面を空にしない。
+3. `<-BlogUrl->`等をリポジトリパスではなくランタイムトークンとして扱う。
+4. Live2D失敗をストア失敗から分離する。
+5. 復旧用のsafe/native bypassを維持する。
 
-1. never require the Blogfa shell for the canonical GitHub-hosted routes;
-2. never blank the native Blogfa surface because an optional remote asset failed;
-3. treat Blogfa placeholders such as `<-BlogUrl->` as runtime tokens rather than repository paths;
-4. keep Live2D failure separate from storefront failure;
-5. preserve a safe/native bypass path for recovery.
+## SEO / discovery
 
-## SEO and discovery
-
-`robots.txt`, `sitemap.xml`, `sitemap.html` and `site.webmanifest` describe the public surface. New durable public routes should be reflected in the sitemap and linked from at least one crawlable page.
-
-## Change boundaries
-
-Prefer narrowly scoped changes:
-
-- storefront content/layout changes;
-- Blogfa runtime changes;
-- Live2D source/model changes;
-- generated bundle changes;
-- repository tooling/documentation.
-
-Keeping these concerns separate makes regressions easier to isolate and rollback.
+`robots.txt`、`sitemap.xml`、`sitemap.html`、`site.webmanifest`が公開面を記述します。新しい恒久ルートはサイトマップへ追加し、少なくとも1つのクロール可能ページからリンクしてください。

@@ -1,17 +1,15 @@
-# Deployment Guide
+# デプロイガイド
 
-## Deployment surfaces
+## 公開面
 
-Project Rev has two distinct public surfaces:
+Project Revには2つの公開面があります。
 
-1. the canonical static repository pages;
-2. the optional Blogfa integration that consumes GitHub-controlled assets.
+1. canonicalな静的リポジトリページ
+2. GitHub管理アセットを利用する任意のBlogfa連携
 
-Treat them separately during release work. A change can be safe for the static site but still break Blogfa placeholders or bootstrap behavior.
+リリース時は分けて扱ってください。静的サイトで安全な変更でもBlogfa placeholder/bootstrapを壊す可能性があります。
 
-## Before publishing
-
-Run the repository locally and inspect at least:
+## 公開前
 
 ```bash
 npm install
@@ -19,67 +17,46 @@ npm run build:prod
 npm run serve
 ```
 
-Then check:
+最低限確認するもの:
 
-- `/index.html`;
-- `/shop.html` and every product filter;
-- `/journal.html` and the article pages;
-- `/about.html`, `/faq.html`, `/404.html`;
-- all six product routes;
-- Live2D loading and close/reopen behavior;
-- mobile navigation around the 760 px breakpoint;
-- reduced-motion behavior;
-- canonical links and page metadata.
+- `/index.html`
+- `/shop.html`と全フィルター
+- `/journal.html`と記事
+- `/about.html`, `/faq.html`, `/404.html`
+- 6製品ルート
+- Live2Dの読み込み/操作
+- 760px付近のモバイルナビ
+- reduced-motion
+- canonical/metadata
+- 日本語表示の折返しと文字化け
 
-## Static-site release checklist
+## 静的サイトチェックリスト
 
-When a durable public route changes:
+- ルート深度に応じた相対asset pathを維持する。
+- ルート追加/削除/改名時は`sitemap.xml`を更新する。
+- discovery変更時は`sitemap.html`も更新する。
+- `robots.txt`がcanonical sitemapを指すことを確認する。
+- `404.html`は`noindex`のままにする。
+- HTML/JavaScriptにsecretや環境固有認証情報を入れない。
 
-- keep relative asset paths valid from that route depth;
-- update `sitemap.xml` when a route is added, removed or renamed;
-- update `sitemap.html` when navigation/discovery changes;
-- verify `robots.txt` still points at the canonical sitemap;
-- keep `404.html` marked `noindex`;
-- do not place secrets or environment-specific credentials in HTML/JavaScript.
+## Live2D変更
 
-## Live2D bundle changes
+`src/`変更で公開バンドルも変わる場合:
 
-If source below `src/` changes and the public bundle is expected to change:
+1. 本番ビルドを作る。
+2. `dist/live2d_bundle.js`の生成/読み込みを確認する。
+3. authored sourceと生成diffを区別しやすくする。
+4. 参照モデル/テクスチャの存在を確認する。
+5. SDKv2/v4両方を維持するなら代表モデルを両方テストする。
 
-1. build production output;
-2. verify `dist/live2d_bundle.js` exists and loads;
-3. keep the authored-source change and generated bundle diff easy to identify;
-4. confirm the referenced models and textures still exist;
-5. test at least one SDKv2 and SDKv4 route/model if both paths remain supported.
+## Blogfaチェックリスト
 
-Do not delete compressed bundle variants unless the serving path no longer uses them.
+- `<-BlogUrl->`などのplaceholderを完全に維持する。
+- safe/native bypassをテストする。
+- GitHub/CDN取得失敗をシミュレートする。
+- Blogfaネイティブ面が残ることを確認する。
+- Live2D失敗が健全なストアを破壊しないことを確認する。
 
-## Blogfa release checklist
+## ロールバック
 
-Blogfa integration must fail closed rather than replace a healthy native page with an empty shell.
-
-Before publishing Blogfa-facing changes:
-
-- preserve runtime placeholders such as `<-BlogUrl->` exactly;
-- test the safe/native bypass path;
-- simulate failure of the GitHub/CDN fetch path;
-- verify the original Blogfa page remains available;
-- verify Live2D failure does not tear down an otherwise healthy storefront;
-- avoid introducing a new external hostname without documenting why it is required.
-
-## Rollback strategy
-
-Prefer a Git revert of the smallest responsible change. Because the canonical site is static-first, rolling back the affected HTML/CSS/JS file should restore the previous behavior without a database migration.
-
-For Blogfa regressions, restore the last-known-good bootstrap/supervisor files first. If the enhancement layer remains unhealthy, use the native/safe route until the integration is repaired.
-
-## What not to mix
-
-Avoid combining these in one release unless the dependency is unavoidable:
-
-- editorial copy and generated bundles;
-- Blogfa bootstrap logic and unrelated storefront styling;
-- model asset replacement and SEO route changes;
-- dependency/toolchain upgrades and visual redesigns.
-
-Small release boundaries make the static and Blogfa surfaces much easier to verify and roll back.
+原因となる最小変更をGit revertするのを優先します。canonicalサイトは静的ファーストなので、対象HTML/CSS/JSを戻せばDB migrationなしで以前の挙動へ戻せます。

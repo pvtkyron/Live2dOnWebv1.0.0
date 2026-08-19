@@ -3,105 +3,91 @@
 [![CI](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/ci.yml/badge.svg)](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/ci.yml)
 [![Static integrity](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/static-integrity.yml/badge.svg)](https://github.com/pvtkyron/Live2dOnWebv1.0.0/actions/workflows/static-integrity.yml)
 
-Project Rev is a static-first storefront and editorial site with an optional Live2D presentation layer and a resilient Blogfa compatibility path.
+Project Revは、静的ファーストのストア兼編集サイトです。必要に応じてLive2D表示レイヤーを追加でき、Blogfa向けには障害に強い互換経路を用意しています。
 
-Project Rev is maintained as an independent repository and product surface. Its Live2D runtime lineage originates from [`Konata09/Live2dOnWeb`](https://github.com/Konata09/Live2dOnWeb), while the Project Rev storefront, Blogfa isolation layer, public routes/SEO surface, automated validation and maintenance documentation are developed here as project-owned layers.
+Live2Dランタイムの系譜は[`Konata09/Live2dOnWeb`](https://github.com/Konata09/Live2dOnWeb)に由来します。一方、Project Revのストア、Blogfa分離レイヤー、公開ルート/SEO、検証自動化、保守ドキュメントはこのリポジトリ独自のレイヤーとして管理しています。
 
-The repository is designed around one rule: durable content and navigation should keep working even when optional enhancement layers fail.
+基本ルールはひとつです。**任意の拡張レイヤーが失敗しても、長く残すコンテンツとナビゲーションは動き続けること。**
 
-## What lives here
+## このリポジトリに含まれるもの
 
-- **Static storefront** — ordinary crawlable HTML routes for the homepage, catalog, products, journal, guides, FAQ and About pages.
-- **Progressive UI** — shared responsive styling and lightweight JavaScript for navigation, filtering, language copy, reading progress and motion effects.
-- **Live2D** — SDKv2/SDKv4 runtime source, model assets and the generated browser bundle.
-- **Blogfa compatibility** — an isolated bootstrap/supervisor layer that can expose the GitHub-controlled storefront without making the native Blogfa page depend on it.
-- **Discovery metadata** — canonical URLs, `robots.txt`, XML/HTML sitemaps and a web manifest.
+- **静的ストア** — ホーム、カタログ、製品、ジャーナル、ガイド、FAQ、Aboutの通常HTMLルート。
+- **プログレッシブUI** — レスポンシブCSSと軽量JavaScriptによるナビゲーション、フィルター、読書進捗、モーション効果。
+- **日本語ローカライズ** — 公開UI、メタデータ、Blogfa表示、Live2Dメッセージを日本語で統一。
+- **Live2D** — SDKv2/SDKv4ランタイムソース、モデルアセット、生成済みブラウザバンドル。
+- **Blogfa互換** — GitHub管理ストアを公開しつつ、Blogfaネイティブ面を独立して維持するbootstrap/supervisorレイヤー。
+- **検索・発見用メタデータ** — canonical URL、`robots.txt`、XML/HTMLサイトマップ、web manifest。
 
-## Repository layout
+## リポジトリ構成
 
-- `index.html`, `shop.html`, `journal.html`, `about.html`, `faq.html` — primary static routes.
-- `products/` — storefront product pages.
-- `posts/` — editorial and guide pages.
-- `assets/` — storefront styling, UI runtime and Blogfa integration layers.
-- `model/` — Live2D models, textures, motions and audio assets.
-- `src/SDKv2/` and `src/SDKv4/` — Live2D runtime source.
-- `dist/` — generated browser bundle and compressed variants.
-- `blogfa-*.html` — Blogfa integration templates/snippets.
-- `docs/` — architecture, deployment, runtime and troubleshooting guides.
+- `index.html`, `shop.html`, `journal.html`, `about.html`, `faq.html` — 主要静的ルート。
+- `products/` — 製品ページ。
+- `posts/` — 編集記事とガイド。
+- `assets/` — ストアのスタイル、UIランタイム、Blogfa連携。
+- `model/` — Live2Dモデル、テクスチャ、モーション、音声。
+- `src/SDKv2/`, `src/SDKv4/` — Live2Dランタイムソース。
+- `dist/` — 生成済みブラウザバンドルと圧縮版。
+- `blogfa-*.html` — Blogfa連携テンプレート/スニペット。
+- `docs/` — アーキテクチャ、デプロイ、ランタイム、トラブルシューティング。
 
-## Project documentation
+## ドキュメント
 
-- [Architecture](docs/ARCHITECTURE.md) — runtime boundaries, route ownership and failure isolation.
-- [Deployment & rollback](docs/DEPLOYMENT.md) — production checks, release boundaries and recovery.
-- [Blogfa runtime contract](docs/BLOGFA_RUNTIME.md) — placeholders, boot order, health checks and fallback behavior.
-- [Live2D maintenance](docs/LIVE2D_MAINTENANCE.md) — SDK/model/bundle compatibility and performance rules.
-- [Troubleshooting](docs/TROUBLESHOOTING.md) — layered diagnosis for storefront, Live2D and Blogfa failures.
-- [Security policy](SECURITY.md) — reporting guidance and client-side secret boundaries.
-- [Contributing](CONTRIBUTING.md) — local setup and review discipline.
+- [アーキテクチャ](docs/ARCHITECTURE.md)
+- [デプロイとロールバック](docs/DEPLOYMENT.md)
+- [Blogfaランタイム契約](docs/BLOGFA_RUNTIME.md)
+- [Live2D保守](docs/LIVE2D_MAINTENANCE.md)
+- [トラブルシューティング](docs/TROUBLESHOOTING.md)
+- [セキュリティポリシー](SECURITY.md)
+- [コントリビュート](CONTRIBUTING.md)
 
-## Local development
-
-Install dependencies:
+## ローカル開発
 
 ```bash
 npm install
-```
-
-Run the development server:
-
-```bash
 npm start
 ```
 
-Create a development build:
+開発ビルド:
 
 ```bash
 npm run build
 ```
 
-Create a production build:
+本番ビルド:
 
 ```bash
 npm run build:prod
 ```
 
-Validate local HTML asset links and sitemap routes without using GitHub Actions:
+静的リンク/サイトマップ検証:
 
 ```bash
 npm run check:static
 ```
 
-Serve the static repository locally on port 5001:
+ポート5001で配信:
 
 ```bash
 npm run serve
 ```
 
-## Quality gates
+## 品質ゲート
 
-Pull requests are checked by two complementary workflows:
+Pull Requestでは主に2つのワークフローを使います。
 
-- **Static integrity** validates local `href`/`src` targets and sitemap routes while treating unresolved Blogfa `<-...->` placeholders as runtime tokens rather than filesystem paths.
-- **CI** installs the locked dependency tree, audits production dependencies, builds the production Live2D bundle, verifies the generated artifact, checks JavaScript syntax and parses runtime JSON/config files.
+- **Static integrity** — ローカル`href`/`src`とサイトマップを検証し、Blogfaの`<-...->`はファイルパスではなくランタイムトークンとして扱います。
+- **CI** — lock済み依存関係の導入、本番依存関係監査、Live2D本番バンドル生成、生成物確認、JavaScript構文確認、JSON/設定ファイル解析を行います。
 
-The same static integrity check can be run locally with `npm run check:static`, which makes broken links catchable before a push.
+## ランタイム原則
 
-The legacy Webpack toolchain still needs the OpenSSL legacy provider for the production-build step on current Node. That compatibility flag is intentionally scoped to that step until the build toolchain itself is upgraded.
+1. **Static first.** JavaScriptなしでも主要コンテンツとルートを利用できること。
+2. **Progressive enhancement.** UIとLive2Dは拡張であり、文書の必須依存にしないこと。
+3. **Fail soft.** ブラウザAPI、マスコット、Blogfa拡張が失敗しても健全なコンテンツを消さないこと。
+4. **境界をレビュー可能に保つ。** 生成済みLive2Dバンドルの変更を無関係な編集/SEO/Blogfa変更と混ぜないこと。
+5. **ブラウザへ届くデータは公開情報として扱う。** 秘密トークン、認証情報、Cookie、本番専用secretをコミットしないこと。
 
-## Runtime principles
+## デプロイモデル
 
-1. **Static first.** Core content, navigation and product/editorial routes should remain useful without JavaScript.
-2. **Enhance progressively.** Storefront UI and Live2D add behavior without becoming hard dependencies of the documents underneath.
-3. **Fail soft.** A blocked browser API, missing mascot asset or unhealthy Blogfa enhancement must not blank otherwise healthy content.
-4. **Keep boundaries reviewable.** Avoid mixing generated Live2D bundle churn with unrelated editorial, SEO or Blogfa changes.
-5. **Treat browser-delivered data as public.** Never commit or embed private tokens, credentials, cookies or production secrets.
+canonicalな静的サイトとLive2Dアセットは同じリポジトリで管理します。Blogfa連携は専用bootstrap/supervisorに隔離し、拡張が安全に初期化できない場合でもBlogfaネイティブ面を維持します。
 
-## Deployment model
-
-The repository keeps the canonical static site and Live2D assets together. Blogfa integration is isolated through dedicated bootstrap/supervisor files so the native Blogfa surface remains available when the enhancement cannot safely initialize.
-
-SEO-facing files such as `robots.txt`, `sitemap.xml` and `site.webmanifest` live alongside the public routes and should move with route changes.
-
-## Change discipline
-
-Keep pull requests narrow enough to review and roll back independently. In particular, separate storefront changes, Blogfa integration changes, Live2D source/model work, generated bundle updates, and repository tooling whenever practical.
+`robots.txt`、`sitemap.xml`、`site.webmanifest`などSEO向けファイルは公開ルートと一緒に管理し、ルート変更時は同時に更新してください。

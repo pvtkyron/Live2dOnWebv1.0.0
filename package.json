@@ -2,19 +2,10 @@
   "name": "live2dweb",
   "version": "1.0.0",
   "private": true,
-  "description": "Project Rev static storefront, Blogfa compatibility runtime, and Live2D web presentation layer.",
+  "description": "Project Revの静的ストア、Blogfa互換ランタイム、Live2D Web表示レイヤー。",
   "homepage": "https://pvtkyron.github.io/Live2dOnWebv1.0.0/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pvtkyron/Live2dOnWebv1.0.0.git"
-  },
-  "keywords": [
-    "live2d",
-    "project-rev",
-    "static-site",
-    "blogfa",
-    "storefront"
-  ],
+  "repository": {"type": "git", "url": "https://github.com/pvtkyron/Live2dOnWebv1.0.0.git"},
+  "keywords": ["live2d","project-rev","static-site","blogfa","storefront"],
   "scripts": {
     "start": "webpack-dev-server --progress --devtool inline-source-map",
     "build": "webpack --mode development --devtool inline-source-map",
@@ -44,7 +35,5 @@
     "webpack-cli": "^4.5",
     "webpack-dev-server": "^3.11.2"
   },
-  "dependencies": {
-    "whatwg-fetch": "^3.0.0"
-  }
+  "dependencies": {"whatwg-fetch": "^3.0.0"}
 }

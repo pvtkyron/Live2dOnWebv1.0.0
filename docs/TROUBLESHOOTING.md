@@ -1,108 +1,54 @@
-# Troubleshooting
+# トラブルシューティング
 
-## Start by locating the failing layer
+## 最初に失敗レイヤーを特定する
 
-Project Rev has three major runtime boundaries:
+1. 静的HTML/CSS/storefront JavaScript
+2. Live2D拡張
+3. Blogfa bootstrap/supervisor
 
-1. static HTML/CSS/storefront JavaScript;
-2. Live2D enhancement;
-3. Blogfa bootstrap/supervisor integration.
+全部にretryを足すのではなく、最初に失敗した境界を直してください。
 
-Debug the earliest failing boundary instead of adding retries to every layer.
+## ページは開くがスタイルがない
 
-## Page loads but looks unstyled
+ルート深度と相対stylesheet pathを確認します。rootページは`./assets/...`、`products/`/`posts/`は`../assets/...`を使います。`assets/store.css`と`assets/ja.css`が正しいMIME/URLで取得できることも確認してください。
 
-Check the route depth and relative stylesheet path. Root pages use `./assets/...`; nested `products/` and `posts/` pages must resolve their assets from the correct relative location.
+## モバイルメニューが開かない
 
-Also verify `assets/store.css` is reachable and the browser did not block it because of an incorrect MIME type or URL.
+- `.topbar`がある。
+- その内部に`nav`がある。
+- toggleに`data-menu-toggle`がある。
+- `assets/store.js`に構文エラーがない。
+- 初期化後に別scriptがnavを置換していない。
 
-## Mobile menu does not open
+## 製品フィルターが動かない
 
-Check that:
+`shop.html`では`.filterbar`ボタンの`data-filter`と`.product-card`の`data-type`を対応させます。表示文字列は日本語のままで構いません。フィルターの内部キーは`all`, `essential`, `creator`, `utility`, `archive`, `support`, `bundle`を維持してください。
 
-- the page contains `.topbar`;
-- the navigation element exists inside it;
-- the toggle has `data-menu-toggle`;
-- `assets/store.js` loaded without a syntax error;
-- no page-specific script replaced the navigation after initialization.
+## reveal/counterが動かない
 
-The toggle should expose `aria-expanded` and `aria-controls` when the shared UI runtime initializes.
+`prefers-reduced-motion`を確認してください。reduced-motionでは意図的に最終表示状態を即時適用します。古いブラウザでは`IntersectionObserver`も確認します。
 
-## Product filters do nothing
+## Live2Dが出ない
 
-The shop filter expects `.filterbar` buttons and `.product-card` entries containing an `.eyebrow` category label. If categories are renamed, keep button text and card category text compatible.
+1. `dist/live2d_bundle.js`が読み込める。
+2. model/texture 404をconsoleで確認。
+3. model JSON pathの大小文字を確認。
+4. canvas要素がある。
+5. `waifu-tips.js` / `assets/waifu-route.js`が先に失敗していない。
+6. Live2Dが壊れてもストア本体が使える。
 
-## Language preference is not remembered
+## Blogfaが空白/部分overlayになる
 
-The language-copy preference uses local storage when available. Browsers or privacy modes may block storage; the site should still work, but the selection will reset on reload.
+native Blogfa → stable snippet → bootstrap/supervisor → remote asset preflight → mount → health → optional Live2Dの順で確認します。拡張が失敗したらnative Blogfaが残るのが正しい挙動です。
 
-## Reveal/counter effects are missing
+## validatorがBlogfa URLをmissing file扱いする
 
-Check `prefers-reduced-motion`. Reduced-motion users intentionally receive the final visible state without animated reveals/counters. Also confirm `IntersectionObserver` availability on older browsers.
+`<-BlogUrl->`や`<-PostLink->`はランタイムトークンです。未解決`<-...->`はskipし、実在するローカル`href`/`src`だけ検証します。
 
-## Live2D does not appear
+## sitemap/canonical不一致
 
-Work outward from the bundle:
+公開ルート改名時はcanonical URL、`sitemap.xml`、そのルートを指すクロール可能リンクを一緒に更新します。`robots.txt`はcanonical sitemapを指し、`404.html`は`noindex`を維持します。
 
-1. confirm `dist/live2d_bundle.js` loads;
-2. check the browser console for model/texture 404s;
-3. verify model JSON paths match repository casing exactly;
-4. verify canvas elements exist on the route;
-5. confirm `waifu-tips.js` and `assets/waifu-route.js` did not fail first;
-6. verify the rest of the storefront remains usable even when Live2D is broken.
+## ローカルでは動くがGitHubで失敗する
 
-## Live2D appears but a model is broken
-
-Compare the model definition with its files under `model/`:
-
-- binary model file;
-- textures;
-- expressions;
-- motions;
-- physics/pose data;
-- sounds when referenced.
-
-Case-sensitive path mistakes can work locally on Windows and fail after deployment.
-
-## Blogfa shows a blank/partial overlay
-
-Check the integration in this order:
-
-1. native Blogfa content rendered;
-2. stable snippet loaded;
-3. bootstrap/supervisor loaded;
-4. remote storefront assets passed preflight;
-5. enhancement mounted;
-6. health verification passed;
-7. optional Live2D initialized.
-
-If an enhancement stage fails, native Blogfa should remain available. Use the safe/native bypass and repair the earliest failed stage.
-
-## Static validator reports Blogfa URLs as missing files
-
-Blogfa placeholders such as `<-BlogUrl->` and `<-PostLink->` are runtime tokens, not local files. Validators must skip unresolved `<-...->` values while continuing to validate real local `href` and `src` targets.
-
-## Sitemap or canonical mismatch
-
-For a renamed public route, update all three surfaces together:
-
-- the page's canonical URL;
-- `sitemap.xml`;
-- crawlable links that point to the route.
-
-Keep `robots.txt` pointing to the canonical sitemap and keep `404.html` as `noindex`.
-
-## A change works locally but fails on GitHub
-
-Look for:
-
-- case-sensitive path differences;
-- files that were ignored and never committed;
-- generated bundle not rebuilt;
-- absolute local filesystem paths;
-- cached CDN content;
-- Blogfa placeholders altered by formatting/refactoring.
-
-## Before opening a regression PR
-
-Record the failing URL, browser, viewport, console error, network failure and the smallest reproduction. Keep unrelated cleanup out of the same fix so rollback remains simple.
+大小文字、未commitファイル、bundle再生成漏れ、ローカル絶対path、CDN cache、整形で壊れたBlogfa placeholderを確認します。
