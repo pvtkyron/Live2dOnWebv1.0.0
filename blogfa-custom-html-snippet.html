@@ -4,11 +4,18 @@
 if(window.__REV_ENTRY_LOADER__)return;
 window.__REV_ENTRY_LOADER__=1;
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILE='assets/blogfa-supervisor.js';
-const KEY='rev:entry:supervisor';
+const KEY='rev:entry:supervisor',MIGRATION='rev:ja:20260820:2';
+try{
+    if(localStorage.getItem(MIGRATION)!=='1'){
+        Object.keys(localStorage).filter(k=>k===KEY||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));
+        localStorage.setItem(MIGRATION,'1');
+        console.info('[ProjectRev] 旧言語キャッシュを削除しました');
+    }
+}catch(e){}
 const valid=code=>typeof code==='string'&&code.length>2000&&code.includes('__REV_STABLE_SUPERVISOR__');
 const cacheGet=()=>{try{const x=localStorage.getItem(KEY);return valid(x)?x:null;}catch(e){return null;}};
 const cacheSet=code=>{try{if(valid(code))localStorage.setItem(KEY,code);}catch(e){}};
-const exec=code=>{if(!valid(code))throw Error('無効なsupervisorコード');const s=document.createElement('script');s.text=code+'\n//# sourceURL=rev-blogfa-supervisor.js';document.head.appendChild(s);};
+const exec=code=>{if(!valid(code))throw Error('無効な監視コード');const s=document.createElement('script');s.text=code+'\n//# sourceURL=rev-blogfa-supervisor.js';document.head.appendChild(s);};
 const fetchText=async(url,headers={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);try{const r=await fetch(url,{cache:'no-store',headers,signal:c.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.text();}finally{clearTimeout(t);}};
 const boot=async()=>{
     const urls=[
@@ -16,11 +23,11 @@ const boot=async()=>{
         ['github-api','https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+FILE+'?ref=master',{Accept:'application/vnd.github.raw+json'}]
     ];
     for(const [name,url,headers] of urls){
-        try{const code=await fetchText(url,headers);if(!valid(code))throw Error(name+' の内容が無効です');cacheSet(code);exec(code);return;}catch(e){console.warn('[ProjectRev entry '+name+']',e);}
+        try{const code=await fetchText(url,headers);if(!valid(code))throw Error(name+' の内容が無効です');cacheSet(code);exec(code);return;}catch(e){console.warn('[ProjectRev 入口 '+name+']',e);}
     }
     const cached=cacheGet();
-    if(cached){try{exec(cached);return;}catch(e){console.warn('[ProjectRev entry cache]',e);}}
-    console.warn('[ProjectRev entry] すべての取得元に失敗しました。Blogfaのネイティブ表示を維持します');
+    if(cached){try{exec(cached);return;}catch(e){console.warn('[ProjectRev 入口キャッシュ]',e);}}
+    console.warn('[ProjectRev 入口] すべての取得元に失敗しました。Blogfaのネイティブ表示を維持します');
 };
 boot();
 })();
