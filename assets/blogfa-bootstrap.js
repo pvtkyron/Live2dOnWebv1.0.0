@@ -1,7 +1,8 @@
 (()=>{
 if(window.__REV_BOOTSTRAP__)return;
 window.__REV_BOOTSTRAP__=1;
-window.REV_BOOTSTRAP_VERSION='2026.08.11.3';
+window.REV_BOOTSTRAP_VERSION='2026.08.20.1';
+document.documentElement.lang='ja';
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',TG='https://t.me/project_rev',SCHEMA='https://schema.org';
 const ROOT=document.getElementById('rev-root'),BLOG=(window.REV_BLOG_URL||location.origin+location.pathname).replace(/\/$/,'');
 const NATIVE=window.REV_NATIVE_MODE||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
@@ -55,15 +56,16 @@ const canonical=r=>{
 const schema=(r,title,desc)=>{
     document.head.querySelectorAll('script[data-rev-schema]').forEach(n=>n.remove());
     const add=o=>{const s=document.createElement('script');s.type='application/ld+json';s.dataset.revSchema='1';s.textContent=JSON.stringify(o);document.head.appendChild(s);};
-    if(r==='home')add({'@context':SCHEMA,'@type':'WebSite',name:'Project Rev Market',url:BLOG,sameAs:[TG]});
-    else add({'@context':SCHEMA,'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Project Rev Market',item:BLOG},{'@type':'ListItem',position:2,name:title,item:routeUrl(r)}]});
-    if(r.startsWith('posts/'))add({'@context':SCHEMA,'@type':'Article',headline:title,description:desc,url:routeUrl(r),dateModified:'2026-08-11',author:{'@type':'Organization',name:'Project Rev'},publisher:{'@type':'Organization',name:'Project Rev'}});
+    if(r==='home')add({'@context':SCHEMA,'@type':'WebSite',name:'Project Rev マーケット',inLanguage:'ja',url:BLOG,sameAs:[TG]});
+    else add({'@context':SCHEMA,'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Project Rev マーケット',item:BLOG},{'@type':'ListItem',position:2,name:title,item:routeUrl(r)}]});
+    if(r.startsWith('posts/'))add({'@context':SCHEMA,'@type':'Article',headline:title,description:desc,inLanguage:'ja',url:routeUrl(r),dateModified:'2026-08-20',author:{'@type':'Organization',name:'Project Rev'},publisher:{'@type':'Organization',name:'Project Rev'}});
 };
 const applyHead=(doc,r)=>{
-    const title=doc.title||'Project Rev Market',desc=doc.querySelector('meta[name="description"]')?.content||'Project Rev Market — digital tools, buyer guides, utilities and updates.';
-    document.title=title;meta('description',desc);meta('robots','index,follow,max-image-preview:large,max-snippet:-1');meta('og:title',title,true);meta('og:description',desc,true);meta('og:url',routeUrl(r),true);meta('twitter:card','summary_large_image');canonical(r);schema(r,title,desc);
+    const title=doc.title||'Project Rev マーケット',desc=doc.querySelector('meta[name="description"]')?.content||'Project Revのデジタルツール、購入ガイド、ユーティリティ、更新情報。';
+    document.documentElement.lang='ja';document.title=title;meta('description',desc);meta('robots','index,follow,max-image-preview:large,max-snippet:-1');meta('og:title',title,true);meta('og:description',desc,true);meta('og:url',routeUrl(r),true);meta('twitter:card','summary_large_image');canonical(r);schema(r,title,desc);
 };
 const wire=current=>{
+    ROOT.querySelectorAll('[data-lang-toggle],.fa-copy').forEach(n=>n.remove());
     ROOT.querySelectorAll('a[href]').forEach(a=>{
         const href=a.getAttribute('href');
         if(/^https:\/\/t\.me\//i.test(href||'')){a.target=a.target||'_blank';a.rel='noopener';return;}
@@ -74,12 +76,10 @@ const wire=current=>{
     ROOT.querySelectorAll('[data-rev-url="tg"]').forEach(a=>{a.href=TG;a.target='_blank';a.rel='noopener';});
     const top=ROOT.querySelector('.topbar'),nav=ROOT.querySelector('#site-nav')||top?.querySelector('nav');let menu=ROOT.querySelector('[data-menu-toggle]');
     if(nav&&!nav.id)nav.id='site-nav';
-    if(top&&nav&&!menu){menu=document.createElement('button');menu.className='menu-toggle';menu.dataset.menuToggle='';menu.setAttribute('aria-label','Toggle menu');menu.setAttribute('aria-expanded','false');menu.textContent='☰';top.appendChild(menu);}
-    if(menu&&nav)menu.addEventListener('click',()=>{const on=nav.classList.toggle('nav-active');menu.setAttribute('aria-expanded',String(on));menu.textContent=on?'×':'☰';});
-    const b=ROOT.querySelector('[data-lang-toggle]'),k='revLang';
-    if(b){const apply=v=>{document.documentElement.dataset.uiLang=v;b.textContent=v==='fa'?'EN / FA':'FA / EN';ROOT.querySelectorAll('.fa-copy').forEach(x=>x.style.display=v==='fa'?'block':'');};b.addEventListener('click',()=>{const v=localStorage.getItem(k)==='fa'?'en':'fa';localStorage.setItem(k,v);apply(v);});apply(localStorage.getItem(k)||'en');}
+    if(top&&nav&&!menu){menu=document.createElement('button');menu.className='menu-toggle';menu.dataset.menuToggle='';menu.setAttribute('aria-label','ナビゲーションを開く');menu.setAttribute('aria-expanded','false');menu.textContent='☰';top.appendChild(menu);}
+    if(menu&&nav)menu.addEventListener('click',()=>{const on=nav.classList.toggle('nav-active');menu.setAttribute('aria-expanded',String(on));menu.setAttribute('aria-label',on?'ナビゲーションを閉じる':'ナビゲーションを開く');menu.textContent=on?'×':'☰';});
     const stats=[...ROOT.querySelectorAll('[data-count]')];
-    if(stats.length&&'IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const n=e.target,t=Number(n.dataset.count||0),s=n.dataset.suffix||'',start=performance.now();const tick=now=>{const p=Math.min((now-start)/700,1),v=Math.round(t*(1-Math.pow(1-p,3)));n.textContent=v.toLocaleString()+s;if(p<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);io.unobserve(n);}),{threshold:.45});stats.forEach(n=>io.observe(n));}
+    if(stats.length&&'IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const n=e.target,t=Number(n.dataset.count||0),s=n.dataset.suffix||'',start=performance.now();const tick=now=>{const p=Math.min((now-start)/700,1),v=Math.round(t*(1-Math.pow(1-p,3)));n.textContent=v.toLocaleString('ja-JP')+s;if(p<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);io.unobserve(n);}),{threshold:.45});stats.forEach(n=>io.observe(n));}
 };
 const render=async()=>{
     const r=route(),f=file(r);ROOT.setAttribute('aria-busy','true');
@@ -88,12 +88,13 @@ const render=async()=>{
         doc.querySelectorAll('script,#waifu').forEach(n=>n.remove());
         ROOT.innerHTML=doc.body.innerHTML;applyHead(doc,r);wire(f);ROOT.removeAttribute('aria-busy');scrollTo(0,0);
     }catch(e){
-        console.error('[ProjectRev route]',e);ROOT.removeAttribute('aria-busy');
-        ROOT.innerHTML='<main class="page-hero"><div class="eyebrow">PROJECT REV / LOAD ERROR</div><h1>The market source did not arrive.</h1><p>The Blogfa shell is alive. Reload once or use Telegram while the CDN catches up.</p><div class="hero-actions"><a class="cta hot" href="'+BLOG+'">HOME</a><a class="cta" href="'+TG+'" target="_blank" rel="noopener">TELEGRAM ↗</a></div></main>';
+        console.error('[ProjectRev ルート]',e);ROOT.removeAttribute('aria-busy');
+        ROOT.innerHTML='<main class="page-hero"><div class="eyebrow">PROJECT REV / 読み込みエラー</div><h1>マーケットのデータを読み込めませんでした。</h1><p>Blogfa側のページは動いています。いちど再読み込みするか、CDNが復旧するまでTelegramをご利用ください。</p><div class="hero-actions"><a class="cta hot" href="'+BLOG+'">ホーム</a><a class="cta" href="'+TG+'" target="_blank" rel="noopener">Telegram ↗</a></div></main>';
     }
 };
 const style=()=>{
     const l=document.createElement('link');l.rel='stylesheet';l.href=BASE+'assets/store.css';l.dataset.revStyle='1';document.head.appendChild(l);
+    const j=document.createElement('link');j.rel='stylesheet';j.href=BASE+'assets/ja.css';j.dataset.revJaStyle='1';document.head.appendChild(j);
     const s=document.createElement('style');s.dataset.revHero='1';s.textContent='.hero-stage{background-image:url("'+BASE+'assets/hero-grid.svg")!important}';document.head.appendChild(s);
 };
 const live2d=async()=>{
@@ -106,5 +107,5 @@ const live2d=async()=>{
 };
 document.addEventListener('click',e=>{const h=e.target.closest&&e.target.closest('.icon-home');if(!h)return;e.preventDefault();e.stopImmediatePropagation();history.pushState({rev:'home'},'',BLOG);render();},true);
 addEventListener('popstate',render);
-(async()=>{await resolveBase();style();await render();live2d();})().catch(e=>console.error('[ProjectRev bootstrap]',e));
+(async()=>{await resolveBase();style();await render();live2d();})().catch(e=>console.error('[ProjectRev ブートストラップ]',e));
 })();

@@ -1,7 +1,7 @@
 (()=>{
 if(window.__REV_LIVE2D_ADDON__)return;
 window.__REV_LIVE2D_ADDON__=1;
-const VERSION='2026.08.11.1';
+const VERSION='2026.08.20.1';
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0';
 const P=new URLSearchParams(location.search);
 const native=P.get('native')==='1'||P.get('revsafe')==='1'||/^\/(post|archive|posts|category|tag|author)(?:\/|$)/i.test(location.pathname);
@@ -18,10 +18,10 @@ const resolveBase=async()=>{
         const r=await timeout(signal=>fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/commits/master',{cache:'no-store',headers:{Accept:'application/vnd.github+json'},signal}),4500);
         if(!r.ok)throw Error('sha HTTP '+r.status);
         const j=await r.json();
-        if(!j||!/^[a-f0-9]{40}$/i.test(j.sha||''))throw Error('invalid sha');
+        if(!j||!/^[a-f0-9]{40}$/i.test(j.sha||''))throw Error('SHAが不正です');
         BASE='https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@'+j.sha+'/';
         mark('sha',true,j.sha.slice(0,12));
-    }catch(e){fail('sha',e);mark('sha',false,'master fallback');}
+    }catch(e){fail('sha',e);mark('sha',false,'masterへフォールバック');}
 };
 const get=async p=>{
     const urls=[
@@ -34,20 +34,20 @@ const get=async p=>{
             const r=await timeout(signal=>fetch(s.url,{cache:'no-store',headers:s.headers||{},signal}),6500);
             if(!r.ok)throw Error(s.name+' HTTP '+r.status);
             const text=await r.text();
-            if(text.length<200)throw Error(s.name+' short payload');
+            if(text.length<200)throw Error(s.name+' の取得内容が短すぎます');
             mark('fetch:'+p,true,s.name);
             return{text,source:s.name};
         }catch(e){last=e;fail('fetch:'+p+':'+s.name,e);mark('fetch:'+p,false,s.name);}
     }
-    throw last||Error('no source '+p);
+    throw last||Error('ソースを取得できません: '+p);
 };
 const loadScript=async src=>new Promise((ok,bad)=>{
     const s=document.createElement('script');
     let done=false;
-    const t=setTimeout(()=>{if(done)return;done=true;s.remove();bad(Error('script timeout'));},10000);
+    const t=setTimeout(()=>{if(done)return;done=true;s.remove();bad(Error('スクリプト読み込みがタイムアウトしました'));},10000);
     s.async=true;s.src=src;
     s.onload=()=>{if(done)return;done=true;clearTimeout(t);ok(s);};
-    s.onerror=()=>{if(done)return;done=true;clearTimeout(t);s.remove();bad(Error('script load failed'));};
+    s.onerror=()=>{if(done)return;done=true;clearTimeout(t);s.remove();bad(Error('スクリプトの読み込みに失敗しました'));};
     document.head.appendChild(s);
 });
 const cleanup=reason=>{
@@ -93,7 +93,7 @@ const visual=()=>new Promise((ok,bad)=>requestAnimationFrame(()=>requestAnimatio
     const c2=document.getElementById('live2d2'),c4=document.getElementById('live2d4');
     const pass=!!w&&w.isConnected&&!!c2&&!!c4;
     mark('visual-root',pass);
-    pass?ok():bad(Error('Live2D DOM missing'));
+    pass?ok():bad(Error('Live2DのDOMが見つかりません'));
 })));
 const boot=async()=>{
     H.status='waiting-store';
@@ -113,7 +113,7 @@ const boot=async()=>{
     const tips=await get('waifu-tips.js');
     H.source=tips.source;
     const code=patchTips(tips.text);
-    if(!code.includes('initModel();'))throw Error('tips initModel missing');
+    if(!code.includes('initModel();'))throw Error('tips内にinitModelが見つかりません');
     window.waifuReady=()=>{H.status='healthy';H.readyAt=Date.now();mark('waifuReady',true);};
     const s=document.createElement('script');
     s.dataset.revLive2dTips='1';
@@ -123,7 +123,7 @@ const boot=async()=>{
     setTimeout(()=>{
         const ok=H.status==='healthy'||!!document.querySelector('#waifu canvas[width]');
         mark('post-init',ok);
-        if(!ok)cleanup(Error('Live2D did not initialize'));
+        if(!ok)cleanup(Error('Live2Dを初期化できませんでした'));
     },6000);
 };
 window.REV_LIVE2D_RELOAD=()=>{cleanup();delete window.__REV_LIVE2D_ADDON__;const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/assets/blogfa-live2d-addon.js?retry='+Date.now();document.head.appendChild(s);};

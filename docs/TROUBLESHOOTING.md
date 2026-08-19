@@ -2,53 +2,81 @@
 
 ## 最初に失敗レイヤーを特定する
 
-1. 静的HTML/CSS/storefront JavaScript
-2. Live2D拡張
-3. Blogfa bootstrap/supervisor
+Project Revには大きく3つの実行境界があります。
 
-全部にretryを足すのではなく、最初に失敗した境界を直してください。
+1. 静的HTML/CSS/ストアJavaScript
+2. Live2D拡張
+3. Blogfa起動/監視連携
+
+全部に再試行を足すのではなく、最初に失敗した境界を直してください。
 
 ## ページは開くがスタイルがない
 
-ルート深度と相対stylesheet pathを確認します。rootページは`./assets/...`、`products/`/`posts/`は`../assets/...`を使います。`assets/store.css`と`assets/ja.css`が正しいMIME/URLで取得できることも確認してください。
+ルート深度と相対スタイルシートパスを確認します。ルートページは`./assets/...`、`products/`/`posts/`は`../assets/...`を使います。`assets/store.css`と`assets/ja.css`が正しいMIMEタイプ/URLで取得できることも確認してください。
 
 ## モバイルメニューが開かない
 
 - `.topbar`がある。
 - その内部に`nav`がある。
-- toggleに`data-menu-toggle`がある。
+- 切替ボタンに`data-menu-toggle`がある。
 - `assets/store.js`に構文エラーがない。
-- 初期化後に別scriptがnavを置換していない。
+- 初期化後に別スクリプトがナビゲーションを置換していない。
+
+共通UIランタイムの初期化後、切替ボタンには`aria-expanded`と`aria-controls`が設定されます。
 
 ## 製品フィルターが動かない
 
-`shop.html`では`.filterbar`ボタンの`data-filter`と`.product-card`の`data-type`を対応させます。表示文字列は日本語のままで構いません。フィルターの内部キーは`all`, `essential`, `creator`, `utility`, `archive`, `support`, `bundle`を維持してください。
+`shop.html`では`.filterbar`ボタンの`data-filter`と`.product-card`の`data-type`を対応させます。表示文字列は日本語のままで構いません。内部キーは`all`, `essential`, `creator`, `utility`, `archive`, `support`, `bundle`を維持してください。
 
-## reveal/counterが動かない
+## 表示アニメーション/カウンターが動かない
 
-`prefers-reduced-motion`を確認してください。reduced-motionでは意図的に最終表示状態を即時適用します。古いブラウザでは`IntersectionObserver`も確認します。
+`prefers-reduced-motion`を確認してください。モーション低減設定では意図的に最終表示状態を即時適用します。古いブラウザでは`IntersectionObserver`も確認します。
 
 ## Live2Dが出ない
 
 1. `dist/live2d_bundle.js`が読み込める。
-2. model/texture 404をconsoleで確認。
-3. model JSON pathの大小文字を確認。
-4. canvas要素がある。
+2. モデル/テクスチャの404をブラウザコンソールで確認する。
+3. モデルJSONパスの大小文字を確認する。
+4. キャンバス要素がある。
 5. `waifu-tips.js` / `assets/waifu-route.js`が先に失敗していない。
 6. Live2Dが壊れてもストア本体が使える。
 
-## Blogfaが空白/部分overlayになる
+## Live2Dは出るがモデルが壊れている
 
-native Blogfa → stable snippet → bootstrap/supervisor → remote asset preflight → mount → health → optional Live2Dの順で確認します。拡張が失敗したらnative Blogfaが残るのが正しい挙動です。
+`model/`配下のモデル定義と以下を照合してください。
 
-## validatorがBlogfa URLをmissing file扱いする
+- バイナリモデル
+- テクスチャ
+- 表情
+- モーション
+- 物理/ポーズ情報
+- 参照されている音声
 
-`<-BlogUrl->`や`<-PostLink->`はランタイムトークンです。未解決`<-...->`はskipし、実在するローカル`href`/`src`だけ検証します。
+Windowsでは通る大小文字違いが、公開環境では失敗することがあります。
 
-## sitemap/canonical不一致
+## Blogfaが空白/部分オーバーレイになる
 
-公開ルート改名時はcanonical URL、`sitemap.xml`、そのルートを指すクロール可能リンクを一緒に更新します。`robots.txt`はcanonical sitemapを指し、`404.html`は`noindex`を維持します。
+Blogfaネイティブ表示 → 安定スニペット → 起動/監視レイヤー → リモートアセット事前検証 → 表示 → 健全性確認 → 任意Live2Dの順で確認します。拡張が失敗したらBlogfaネイティブ表示が残るのが正しい挙動です。
+
+## 検証ツールがBlogfa URLを存在しないファイル扱いする
+
+`<-BlogUrl->`や`<-PostLink->`はランタイムトークンです。未解決`<-...->`は無視し、実在するローカル`href`/`src`だけ検証します。
+
+## サイトマップ/正規URLが一致しない
+
+公開ルート改名時は正規URL、`sitemap.xml`、そのルートを指すクロール可能リンクを一緒に更新します。`robots.txt`は正規サイトマップを指し、`404.html`は`noindex`を維持します。
 
 ## ローカルでは動くがGitHubで失敗する
 
-大小文字、未commitファイル、bundle再生成漏れ、ローカル絶対path、CDN cache、整形で壊れたBlogfa placeholderを確認します。
+次を確認してください。
+
+- パスの大小文字
+- 無視されてコミットされなかったファイル
+- バンドル再生成漏れ
+- ローカル絶対パス
+- CDNキャッシュ
+- 整形で壊れたBlogfaプレースホルダー
+
+## 不具合修正プルリクエストを出す前に
+
+失敗URL、ブラウザ、画面幅、コンソールエラー、ネットワーク失敗、最小再現手順を記録します。ロールバックを簡単にするため、無関係な整理を同じ修正へ混ぜないでください。

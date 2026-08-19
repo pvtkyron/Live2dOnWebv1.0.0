@@ -9,14 +9,14 @@ Blogfaネイティブページを基本可用性の依存先にせず、GitHub�
 ## 主なファイル
 
 - `blogfa-final-template.html` — Blogfaネイティブテンプレート。
-- `blogfa-custom-html-snippet.html` — 安定したカスタムHTML/JS入口。
-- `assets/blogfa-bootstrap.js` — ストアbootstrap。
-- `assets/blogfa-supervisor.js` — health監視とfallback所有。
+- `blogfa-custom-html-snippet.html` — 安定したカスタムHTML/JavaScript入口。
+- `assets/blogfa-bootstrap.js` — ストア起動処理。
+- `assets/blogfa-supervisor.js` — 健全性監視とフォールバック管理。
 - `assets/blogfa-live2d-addon.js` — 任意のマスコット層。
-- `assets/blogfa-runtime-manifest.json` — runtime policy/threshold。
-- `assets/blogfa-widget*.js` — 互換/履歴用widget。
+- `assets/blogfa-runtime-manifest.json` — ランタイム方針としきい値設定。
+- `assets/blogfa-widget*.js` — 互換性/履歴用ウィジェット。
 
-## ランタイムplaceholder
+## ランタイム用プレースホルダー
 
 ```text
 <-BlogUrl->
@@ -25,49 +25,49 @@ Blogfaネイティブページを基本可用性の依存先にせず、GitHub�
 <-PostTitle->
 ```
 
-これらはBlogfaが実行時に解決するトークンで、ローカルファイルパスではありません。静的validatorは未解決`<-...->`をfilesystem targetとして扱わないでください。
+これらはBlogfaが実行時に解決するトークンで、ローカルファイルパスではありません。静的検証ツールは未解決`<-...->`をファイルシステム上の対象として扱わないでください。
 
 ## 起動順
 
 ```text
-native Blogfa page
+Blogfaネイティブページ
   ↓
-stable custom snippet
+安定したカスタムスニペット
   ↓
-storefront bootstrap/supervisor
+ストア起動/監視レイヤー
   ↓
-health check
-  ├─ healthy → Project Rev layerを公開
-  └─ unhealthy → native Blogfaを維持
+健全性確認
+  ├─ 正常 → Project Revレイヤーを公開
+  └─ 異常 → Blogfaネイティブ表示を維持
   ↓
-optional Live2D addon
+任意のLive2D追加レイヤー
 ```
 
 Live2Dをストアの必須依存にしてはいけません。
 
 ## 障害分離
 
-- ネットワーク失敗でもnative contentを表示する。
-- malformedなremote contentでページを置換しない。
-- Live2D失敗はマスコット層だけ劣化させる。
-- cached/last-known-goodは検証が通る場合だけ利用する。
-- safe/native bypassを維持する。
-- watchdog復旧でreload loopを作らない。
+- ネットワーク失敗でもネイティブコンテンツを表示する。
+- 壊れたリモートコンテンツでページを置換しない。
+- Live2D失敗はマスコット層だけを停止させる。
+- キャッシュ済み/直近の正常データは検証が通る場合だけ利用する。
+- 安全/ネイティブ経路を維持する。
+- 監視処理による復旧で再読み込みループを作らない。
 
 ## 変更チェックリスト
 
-1. Blogfa template tag/placeholderを正確に維持する。
-2. native pageへ漏れるglobal CSSを避ける。
-3. mount/commitを可能な限りtransactionalにする。
-4. 外部fetchには必ず失敗経路を用意する。
-5. cleanupで所有するobserver/timer/listenerを解放する。
-6. JavaScriptブロック/remote source unavailableでもnative pageを試す。
-7. Live2D unavailableでもストアを試す。
+1. Blogfaテンプレートタグとプレースホルダーを正確に維持する。
+2. ネイティブページへ漏れる全体CSSを避ける。
+3. 表示確定処理を可能な限り一括で安全に行う。
+4. 外部取得には必ず失敗経路を用意する。
+5. 後始末で所有する監視、タイマー、イベントリスナーを解放する。
+6. JavaScriptブロック時/リモート取得不能時でもネイティブページを試す。
+7. Live2D利用不能時でもストアを試す。
 
 ## デバッグ
 
-利用可能なら`REV_SYSTEM_HEALTH()`と`REV_LIVE2D_HEALTH()`を使用します。空白/部分表示では、native template → bootstrap → asset preflight → mount → supervisor health → Live2Dの順で、最初に失敗した境界を直してください。
+利用可能なら`REV_SYSTEM_HEALTH()`と`REV_LIVE2D_HEALTH()`を使用します。空白/部分表示では、ネイティブテンプレート → 起動処理 → アセット事前検証 → 表示 → 監視による健全性確認 → Live2Dの順で、最初に失敗した境界を直してください。
 
 ## セキュリティ境界
 
-GitHub token、private repository credential、session cookie、secret API keyをBlogfa template/client bootstrapへ埋め込まないでください。ブラウザへ届くものはすべて公開情報として扱います。
+GitHubトークン、非公開リポジトリ認証情報、セッションクッキー、秘密APIキーをBlogfaテンプレートやクライアント側起動処理へ埋め込まないでください。ブラウザへ届くものはすべて公開情報として扱います。

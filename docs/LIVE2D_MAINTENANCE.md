@@ -2,53 +2,61 @@
 
 ## 構成
 
-- `src/SDKv2/` — legacy SDKv2 runtime
-- `src/SDKv4/` — SDKv4 runtime/framework
-- `model/` — model definition、texture、motion、sound
-- `dist/live2d_bundle.js` — 公開ページ用browser bundle
+- `src/SDKv2/` — 旧SDKv2ランタイム
+- `src/SDKv4/` — SDKv4ランタイム/フレームワーク
+- `model/` — モデル定義、テクスチャ、モーション、音声
+- `dist/live2d_bundle.js` — 公開ページ用ブラウザバンドル
 - `dist/live2d_bundle.js.gz`, `.br` — 圧縮版
 - `waifu-tips.js`, `waifu-tips.json` — マスコット動作/日本語コンテンツ
-- `assets/waifu.css` — 表示
-- `assets/waifu-route.js` — route bootstrap glue
+- `assets/waifu.css` — 表示スタイル
+- `assets/waifu-route.js` — ルートごとの起動接続
 
 ## モデル変更前
 
-まずSDK世代を特定してください。SDKv2とSDKv4のモデル形式は互換ではありません。モデルJSON、binary、texture、motion、physics、soundを一緒に管理します。
+まずSDK世代を特定してください。SDKv2とSDKv4のモデル形式は互換ではありません。モデルJSON、バイナリ、テクスチャ、モーション、物理設定、音声を一緒に管理します。
 
 テクスチャ交換/最適化時:
 
 - モデル定義が対応するサイズを維持する。
-- transparencyを維持する。
-- 全texture pathを確認する。
-- alternate format削除前に元形式をテストする。
-- 透明edgeに継ぎ目が出るlossy変換を避ける。
+- 透明度を維持する。
+- 全テクスチャパスを確認する。
+- 代替形式削除前に元形式をテストする。
+- 透明な縁に継ぎ目が出る非可逆変換を避ける。
 
 ## ソースと生成物
 
-`src/`はauthored runtime source、`dist/`は生成browser outputとして分離します。本番挙動に影響するsource変更はbundle再生成を伴いますが、無関係なコンテンツ変更でbundleを再生成しないでください。
+`src/`は人が保守するランタイムソース、`dist/`は生成済みブラウザ出力として分離します。本番挙動に影響するソース変更はバンドル再生成を伴いますが、無関係なコンテンツ変更でバンドルを再生成しないでください。
+
+この分離により、レビュー時に手書きの変更と生成物を区別しやすくなります。
 
 ## 本番検証
 
-1. 本番ビルド。
-2. canonicalホームとnested routeを開く。
-3. canvasがconsole errorなしで初期化されることを確認。
-4. 対応していればmotion/expressionを1つ以上実行。
-5. close/reopenを確認。
-6. マスコット初期化失敗でもサイトが動くことを確認。
-7. narrow mobileでoverflow/touch干渉を確認。
+1. 本番ビルドを作る。
+2. 正規ホームと少なくとも1つの階層下ルートを開く。
+3. キャンバスがコンソールエラーなしで初期化されることを確認する。
+4. 対応していればモーション/表情を1つ以上実行する。
+5. 閉じる/再表示を確認する。
+6. マスコット初期化失敗でもサイトが動くことを確認する。
+7. 狭いモバイル幅で画面はみ出し/タッチ干渉を確認する。
 
 ## パフォーマンス
 
-- runtime対応の圧縮画像代替を維持する。
-- 全model/motion/soundをglobal preloadしない。
-- route UI変更ごとにruntimeを再構築しない。
-- optional integration破棄時にtimer/listener/observerを解放する。
-- reduced-motionでは装飾motionを無効化する。
+- ランタイム対応の圧縮画像代替を維持する。
+- 全モデル/モーション/音声を一括事前読み込みしない。
+- ルートUI変更ごとにランタイムを再構築しない。
+- 任意連携を破棄するときはタイマー、イベントリスナー、監視処理を解放する。
+- モーション低減設定では装飾モーションを無効化する。
 
 ## 互換性
 
-SDKv4があるからという理由だけでSDKv2を削除しないでください。古いruntimeに依存する公開モデル/ルートがないことを先に確認します。Cubism framework更新もcore/runtime互換性を無視して単独更新しないでください。
+SDKv4があるからという理由だけでSDKv2を削除しないでください。古いランタイムに依存する公開モデル/ルートがないことを先に確認します。Cubismフレームワーク更新もCore/ランタイム互換性を無視して単独更新しないでください。
+
+## 障害境界
+
+マスコットは拡張です。失敗してもストアのナビゲーション、製品、ジャーナル、Blogfaフォールバックを妨げてはいけません。
+
+Live2D変更が空白ページ、例外ループ、消えないオーバーレイを起こす場合、マスコット自体が動いていても公開を止めるべき不具合として扱います。
 
 ## ライセンス
 
-SDKツリーのupstream license、changelog、redistributable noticeは改変せず維持してください。新しいモデルは再配布権が明確な場合だけ追加します。
+SDKツリーの上流ライセンス、変更履歴、再配布通知は改変せず維持してください。新しいモデルは再配布権が明確で、このリポジトリの公開用途と両立する場合だけ追加します。
