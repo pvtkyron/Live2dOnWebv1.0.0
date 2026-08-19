@@ -34,7 +34,7 @@ for(const file of html){
   let m;
   while((m=attr.exec(text))){
     const target=localTarget(file,m[1]);
-    if(target&&!fs.existsSync(target))errors.push(`${path.relative(root,file)} -> missing ${m[1]}`);
+    if(target&&!fs.existsSync(target))errors.push(`${path.relative(root,file)} -> 見つかりません: ${m[1]}`);
   }
 }
 
@@ -45,13 +45,13 @@ if(fs.existsSync(sitemap)){
   for(const route of urls){
     const clean=route.split(/[?#]/)[0];
     const target=path.join(root,clean||'index.html');
-    if(!fs.existsSync(target))errors.push(`sitemap.xml -> missing route ${route||'/'}`);
+    if(!fs.existsSync(target))errors.push(`sitemap.xml -> ルートが見つかりません: ${route||'/'}`);
   }
 }
 
 if(errors.length){
-  console.error(`Static integrity check failed with ${errors.length} problem(s):`);
+  console.error(`静的整合性検証に失敗しました。問題数: ${errors.length}`);
   for(const error of errors)console.error(`- ${error}`);
   process.exit(1);
 }
-console.log(`Static integrity OK: checked ${html.length} HTML files and sitemap routes.`);
+console.log(`静的整合性OK: HTML ${html.length}ファイルとサイトマップのルートを確認しました。`);
