@@ -4,12 +4,12 @@
 if(window.__REV_ENTRY_LOADER__)return;
 window.__REV_ENTRY_LOADER__=1;
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',SUPERVISOR='assets/blogfa-supervisor.js',RESPONSIVE='assets/blogfa-responsive.js';
-const KEY='rev:entry:supervisor',RKEY='rev:entry:responsive',MIGRATION='rev:ja:20260820:3';
+const KEY='rev:entry:supervisor',RKEY='rev:entry:responsive',MIGRATION='rev:ja:20260820:4';
 try{
     if(localStorage.getItem(MIGRATION)!=='1'){
         Object.keys(localStorage).filter(k=>k===KEY||k===RKEY||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));
         localStorage.setItem(MIGRATION,'1');
-        console.info('[ProjectRev] 旧キャッシュを更新しました');
+        console.info('[ProjectRev] 表示キャッシュを更新しました');
     }
 }catch(e){}
 const viewport=()=>{let m=document.querySelector('meta[name="viewport"]');if(!m){m=document.createElement('meta');m.name='viewport';document.head.appendChild(m);}m.content='width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content';};
@@ -22,7 +22,7 @@ const cached=(key,marker)=>{try{const x=localStorage.getItem(key);return x&&x.in
 const save=(key,code,marker)=>{try{if(code&&code.includes(marker))localStorage.setItem(key,code);}catch(e){}};
 const load=async(file,key,marker,source)=>{
     const urls=[
-        ['jsdelivr','https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+file+'?rev=20260820.3',{}],
+        ['jsdelivr','https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+file+'?rev=20260820.4',{}],
         ['github-api','https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+file+'?ref=master',{Accept:'application/vnd.github.raw+json'}]
     ];
     for(const [name,url,headers] of urls){
