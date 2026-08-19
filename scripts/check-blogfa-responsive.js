@@ -30,6 +30,11 @@ test('画像遅延読み込み',/loading='lazy'/.test(js));
 test('Live2Dキーボード操作',/tabindex/.test(js)&&/aria-label/.test(js));
 test('viewport-fit cover',/viewport-fit=cover/.test(js)&&/interactive-widget=resizes-content/.test(js));
 test('生成テキスト日本語化',/遊ぶ \/ 読む \/ 選ぶ/.test(js)&&/遊ぶ \/ 読む \/ 選ぶ/.test(css));
+test('ネイティブhamburger',/wireNative/.test(js)&&/rev-native-menu-toggle/.test(js));
+test('ネイティブmenu進行的強化',/html\.rev-responsive-ready \.native-nav/.test(js));
+test('画面外描画を遅延',/content-visibility:auto/.test(js)&&/contain-intrinsic-size/.test(js));
+test('タッチ端末の描画負荷軽減',/\.noise\{display:none!important\}/.test(js)&&/backdrop-filter:blur\(12px\)/.test(js));
+test('透明効果低減設定',/prefers-reduced-transparency:reduce/.test(js));
 
 const responsiveBoot=entry.indexOf('await load(RESPONSIVE');
 const supervisorBoot=entry.indexOf('await load(SUPERVISOR');
