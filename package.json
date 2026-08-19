@@ -13,6 +13,7 @@
     "check:static": "node scripts/validate-static-site.js",
     "check:ja": "node scripts/check-japanese-localization.js",
     "check:blogfa": "node scripts/check-blogfa-responsive.js",
+    "check:type": "node scripts/check-typography.js",
     "serve": "serve -p 5001",
     "clean": "rimraf dist",
     "cf:dev": "npx wrangler@latest dev",
