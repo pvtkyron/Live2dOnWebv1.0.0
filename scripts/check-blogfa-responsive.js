@@ -29,7 +29,9 @@ test('画像遅延読み込み',/loading='lazy'/.test(js));
 test('Live2Dキーボード操作',/tabindex/.test(js)&&/aria-label/.test(js));
 test('viewport-fit cover',/viewport-fit=cover/.test(js)&&/interactive-widget=resizes-content/.test(js));
 
-test('入口がレスポンシブを先に起動',entry.indexOf('RESPONSIVE')<entry.indexOf('SUPERVISOR')&&/viewport-fit=cover/.test(entry));
+const responsiveBoot=entry.indexOf('await load(RESPONSIVE');
+const supervisorBoot=entry.indexOf('await load(SUPERVISOR');
+test('入口がレスポンシブを先に起動',responsiveBoot>=0&&supervisorBoot>responsiveBoot&&/viewport-fit=cover/.test(entry));
 test('入口キャッシュ移行v3',/rev:ja:20260820:3/.test(entry));
 test('supervisor冗長CSS',/blogfa-responsive\.css/.test(supervisor));
 test('supervisor冗長runtime',/blogfa-responsive\.js/.test(supervisor));
