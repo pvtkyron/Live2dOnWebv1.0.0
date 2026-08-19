@@ -35,11 +35,12 @@ test('ネイティブmenu進行的強化',/html\.rev-responsive-ready \.native-n
 test('画面外描画を遅延',/content-visibility:auto/.test(js)&&/contain-intrinsic-size/.test(js));
 test('タッチ端末の描画負荷軽減',/\.noise\{display:none!important\}/.test(js)&&/backdrop-filter:blur\(12px\)/.test(js));
 test('透明効果低減設定',/prefers-reduced-transparency:reduce/.test(js));
+test('日本語タイポグラフィをShadowへ注入',/--rev-font-display:/.test(js)&&/font-synthesis:none/.test(js)&&/text-wrap:balance/.test(js));
 
 const responsiveBoot=entry.indexOf('await load(RESPONSIVE');
 const supervisorBoot=entry.indexOf('await load(SUPERVISOR');
 test('入口がレスポンシブを先に起動',responsiveBoot>=0&&supervisorBoot>responsiveBoot&&/viewport-fit=cover/.test(entry));
-test('入口キャッシュ移行v3',/rev:ja:20260820:3/.test(entry));
+test('入口キャッシュ移行v4',/rev:ja:20260820:4/.test(entry));
 test('supervisor冗長CSS',/blogfa-responsive\.css/.test(supervisor));
 test('supervisor冗長runtime',/blogfa-responsive\.js/.test(supervisor));
 test('Live2Dをidle遅延起動',/requestIdleCallback/.test(supervisor)&&/await deferLive2d\(\)/.test(supervisor));
