@@ -2,10 +2,10 @@
 
 ## システム構成
 
-Project Revは意図的に静的ファーストです。長く残すストアは通常HTML + 共通CSS/JavaScriptで構成し、BlogfaとLive2Dは任意の拡張レイヤーとして分離します。
+Project Revは意図的に静的ファーストです。長く残すストアは通常のHTMLと共通CSS/JavaScriptで構成し、BlogfaとLive2Dは任意の拡張レイヤーとして分離します。
 
 ```text
-public HTML routes
+公開HTMLルート
   ├─ assets/store.css
   ├─ assets/ja.css
   ├─ assets/store.js
@@ -13,7 +13,7 @@ public HTML routes
   ├─ dist/live2d_bundle.js
   └─ waifu-tips.js
 
-Blogfa surface
+Blogfa表示面
   ├─ blogfa-final-template.html
   ├─ blogfa-custom-html-snippet.html
   ├─ assets/blogfa-bootstrap.js
@@ -25,37 +25,51 @@ Blogfa surface
 
 `index.html`、`shop.html`、`journal.html`、`about.html`、`faq.html`は独立した文書として動きます。製品/記事ルートは`products/`と`posts/`以下です。
 
-この層が日本語の長期コンテンツ、canonical URL、クロール可能なナビゲーション、metadata、JavaScript失敗時のfallbackを所有します。
+この層が日本語の長期コンテンツ、正規URL、クロール可能なナビゲーション、メタデータ、JavaScript失敗時のフォールバックを所有します。
 
 ## 共通ストアランタイム
 
-`assets/store.css`がビジュアル/レスポンシブ動作を定義し、`assets/ja.css`が日本語向けタイポグラフィを補正します。`assets/store.js`は次を追加します。
+`assets/store.css`がビジュアルとレスポンシブ動作を定義し、`assets/ja.css`が日本語向けタイポグラフィを補正します。`assets/store.js`は次を追加します。
 
 - モバイルナビゲーション状態
-- 現在ページのsemantics
+- 現在ページの意味づけ
 - `data-filter`/`data-type`ベースの言語非依存カタログフィルター
-- reveal効果
+- 表示アニメーション
 - 読書進捗
 - 軽量カウンター/ポインター効果
 
-ストレージ制限、reduced-motion、ブラウザAPI不足があっても静的ページは利用可能でなければなりません。
+ストレージ制限、モーション低減設定、ブラウザAPI不足があっても静的ページは利用可能でなければなりません。
 
 ## Live2Dレイヤー
 
 `dist/live2d_bundle.js`はLive2Dソースから生成したブラウザバンドルです。モデルは`model/`、日本語マスコットメッセージは`waifu-tips.json`、UI接続は`waifu-tips.js`と`assets/waifu-route.js`が担当します。
 
+生成済みバンドルは、可能な限り手書きソースの変更と分けて扱います。レビュー時に生成物と人が書いた変更を区別しやすくするためです。
+
 ## Blogfa互換レイヤー
 
-Blogfa連携はcanonical静的サイトから隔離されています。bootstrap/supervisorは前提条件が健全な場合だけGitHub管理ストアを読み込み、失敗時はBlogfaネイティブ面を残します。
+Blogfa連携は正規の静的サイトから隔離されています。起動/監視レイヤーは前提条件が健全な場合だけGitHub管理ストアを読み込み、失敗時はBlogfaネイティブ面を残します。
 
 契約:
 
-1. canonical GitHubルートがBlogfaを必須にしない。
-2. 任意リモートアセット失敗でBlogfaネイティブ面を空にしない。
+1. 正規のGitHubルートがBlogfaを必須にしない。
+2. 任意のリモートアセット失敗でBlogfaネイティブ面を空にしない。
 3. `<-BlogUrl->`等をリポジトリパスではなくランタイムトークンとして扱う。
 4. Live2D失敗をストア失敗から分離する。
-5. 復旧用のsafe/native bypassを維持する。
+5. 復旧用の安全/ネイティブ経路を維持する。
 
-## SEO / discovery
+## SEOと検索導線
 
 `robots.txt`、`sitemap.xml`、`sitemap.html`、`site.webmanifest`が公開面を記述します。新しい恒久ルートはサイトマップへ追加し、少なくとも1つのクロール可能ページからリンクしてください。
+
+## 変更境界
+
+できるだけ変更範囲を分けてください。
+
+- ストアのコンテンツ/レイアウト
+- Blogfaランタイム
+- Live2Dソース/モデル
+- 生成済みバンドル
+- リポジトリ用ツール/ドキュメント
+
+境界を分けることで、不具合の原因特定とロールバックが簡単になります。
