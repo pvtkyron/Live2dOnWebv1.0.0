@@ -1,7 +1,7 @@
 (()=>{
 if(window.__REV_BLOGFA_WIDGET_V3__)return;
 window.__REV_BLOGFA_WIDGET_V3__=1;
-const VERSION='2026.08.11.5';
+const VERSION='2026.08.20.1';
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0';
 const BLOG=(location.origin+location.pathname).replace(/\/$/,'');
 const params=new URLSearchParams(location.search);
@@ -37,7 +37,7 @@ const loadManifest=async()=>{
             const r=await timeout(signal=>fetch(src.url,{cache:'no-store',headers:src.headers||{},signal}),4500,'manifest');
             if(!r.ok)throw Error(src.name+' HTTP '+r.status);
             const m=JSON.parse(await r.text());
-            if(!validManifest(m))throw Error('invalid manifest');
+            if(!validManifest(m))throw Error('マニフェストの内容が不正です');
             writeJson('manifest',{at:Date.now(),value:m});
             mark('manifest',true,src.name);
             return{...DEFAULTS,...m};
@@ -56,7 +56,7 @@ const resolveSha=async()=>{
         const r=await timeout(signal=>fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/commits/master',{cache:'no-store',headers:{Accept:'application/vnd.github+json'},signal}),4500,'sha');
         if(!r.ok)throw Error('sha HTTP '+r.status);
         const j=await r.json();
-        if(!j||!/^[a-f0-9]{40}$/i.test(j.sha||''))throw Error('invalid sha');
+        if(!j||!/^[a-f0-9]{40}$/i.test(j.sha||''))throw Error('SHAが不正です');
         writeJson('sha',{at:Date.now(),value:j.sha});
         mark('resolve-sha',true,j.sha.slice(0,12));
         return j.sha;
@@ -104,7 +104,7 @@ const getAsset=async(p,ps,cfg,kind)=>{
             const r=await timeout(signal=>fetch(src.url(p),{cache:'no-store',headers:src.headers||{},signal}),6000,p);
             if(!r.ok)throw Error(src.name+' HTTP '+r.status);
             const text=await r.text();
-            if(!check(p,text))throw Error(src.name+' invalid '+p);
+            if(!check(p,text))throw Error(src.name+' の内容が不正です: '+p);
             const base=src.name==='github-api'?(cached&&cached.base)||jd('master')(''):src.url('').replace(/\?rev=.*$/,'');
             const out={text,base,source:src.name};
             cacheWrite(p,out);
@@ -115,7 +115,7 @@ const getAsset=async(p,ps,cfg,kind)=>{
     if(cached&&check(p,cached.text)){
         health.cacheHits++;mark('fetch:'+p,true,'lkg-cache');return{...cached,source:'lkg-cache'};
     }
-    throw last||Error('no provider for '+p);
+    throw last||Error('取得元が見つかりません: '+p);
 };
 const rewriteCss=(css,base)=>css.replace(/url\(\s*(['"]?)([^'"\)]+)\1\s*\)/g,(m,q,v)=>{const raw=String(v||'').trim();if(!raw||/^(data:|https?:|#)/i.test(raw))return m;try{return 'url("'+new URL(raw,base).href+'")';}catch(e){return m;}});
 const internalRoute=(href,current)=>{
@@ -137,29 +137,28 @@ const internalRoute=(href,current)=>{
 };
 const rewriteHtml=(doc,current,assetBase)=>{
     const source=assetBase+current;
-    doc.querySelectorAll('script,#waifu').forEach(n=>n.remove());
+    doc.querySelectorAll('script,#waifu,[data-lang-toggle],.fa-copy').forEach(n=>n.remove());
     doc.querySelectorAll('[src]').forEach(n=>{const v=n.getAttribute('src');if(!v||/^(data:|https?:|\/\/)/i.test(v))return;try{n.setAttribute('src',new URL(v,source).href);}catch(e){}});
     doc.querySelectorAll('a[href]').forEach(a=>{const h=a.getAttribute('href');const r=internalRoute(h,current);if(r)a.setAttribute('href',routeUrl(r));else if(/^https:\/\/t\.me\//i.test(h||'')){a.setAttribute('target','_blank');a.setAttribute('rel','noopener');}});
 };
 const preflight=(doc,css,r,cfg)=>{
     const body=doc.body,main=body&&body.querySelector('main'),links=body?[...body.querySelectorAll('a[href]')]:[],text=(body&&body.textContent||'').replace(/\s+/g,' ').trim();
     const checks=[
-        ['body',!!body],['main',!!main],['text',text.length>180],['links',links.length>=2],['css-size',css.length>=cfg.minCssBytes],['css-rules',/[.#][a-z0-9_-]+\s*\{/i.test(css)],['route',r!=='404'||/404|not found/i.test(text)],['no-iframe-root',!(body&&body.firstElementChild&&body.firstElementChild.tagName==='IFRAME')]
+        ['body',!!body],['main',!!main],['text',text.length>180],['links',links.length>=2],['css-size',css.length>=cfg.minCssBytes],['css-rules',/[.#][a-z0-9_-]+\s*\{/i.test(css)],['route',r!=='404'||/404|not found|見つかりません/i.test(text)],['no-iframe-root',!(body&&body.firstElementChild&&body.firstElementChild.tagName==='IFRAME')]
     ];
     checks.forEach(x=>mark('preflight:'+x[0],x[1],String(r)));
     const bad=checks.find(x=>!x[1]);
-    if(bad)throw Error('preflight failed: '+bad[0]);
+    if(bad)throw Error('事前検証に失敗しました: '+bad[0]);
 };
 const wire=shadow=>{
+    shadow.querySelectorAll('[data-lang-toggle],.fa-copy').forEach(n=>n.remove());
     const menu=shadow.querySelector('[data-menu-toggle]'),nav=shadow.querySelector('#site-nav')||shadow.querySelector('.topbar nav');
-    if(menu&&nav)menu.addEventListener('click',()=>{const on=nav.classList.toggle('nav-active');menu.setAttribute('aria-expanded',String(on));menu.textContent=on?'×':'☰';});
-    const lang=shadow.querySelector('[data-lang-toggle]');
-    if(lang)lang.addEventListener('click',()=>{const fa=lang.dataset.revFa!=='1';lang.dataset.revFa=fa?'1':'0';lang.textContent=fa?'EN / FA':'FA / EN';shadow.querySelectorAll('.fa-copy').forEach(n=>n.style.display=fa?'block':'none');});
+    if(menu&&nav){menu.setAttribute('aria-label','ナビゲーションを開く');menu.addEventListener('click',()=>{const on=nav.classList.toggle('nav-active');menu.setAttribute('aria-expanded',String(on));menu.setAttribute('aria-label',on?'ナビゲーションを閉じる':'ナビゲーションを開く');menu.textContent=on?'×':'☰';});}
 };
 const visualCheck=(host,shadow)=>new Promise((ok,bad)=>requestAnimationFrame(()=>requestAnimationFrame(()=>{try{
     const shell=shadow.querySelector('.rev-shadow-body'),main=shadow.querySelector('main'),rect=host.getBoundingClientRect(),mrect=main&&main.getBoundingClientRect(),style=getComputedStyle(host);
     const checks=[['connected',host.isConnected],['width',rect.width>240],['height',rect.height>240],['main-visible',!!mrect&&mrect.width>120&&mrect.height>80],['shell',!!shell],['display',style.display!=='none'],['shadow-style',shadow.querySelectorAll('style').length>0]];
-    checks.forEach(x=>mark('visual:'+x[0],x[1]));const b=checks.find(x=>!x[1]);b?bad(Error('visual failed: '+b[0])):ok();
+    checks.forEach(x=>mark('visual:'+x[0],x[1]));const b=checks.find(x=>!x[1]);b?bad(Error('表示検証に失敗しました: '+b[0])):ok();
 }catch(e){bad(e);}})));
 let mountedHost=null,previousTitle=document.title,watchdog=null,observer=null,retrying=false,cfg={...DEFAULTS};
 const rollback=reason=>{
@@ -170,8 +169,8 @@ const rollback=reason=>{
 const stopWatchers=()=>{if(watchdog){clearInterval(watchdog);watchdog=null;}if(observer){observer.disconnect();observer=null;}};
 const scheduleRecovery=reason=>{
     if(terminal(health.status)||retrying||health.recoveries>=cfg.maxRecoveries)return;
-    retrying=true;health.recoveries++;fail('recovery-trigger',reason||'unknown');
-    rollback(reason instanceof Error?reason:Error(String(reason||'recovery')));
+    retrying=true;health.recoveries++;fail('recovery-trigger',reason||'不明');
+    rollback(reason instanceof Error?reason:Error(String(reason||'復旧')));
     setTimeout(()=>mount(true).catch(e=>fail('recovery',e)).finally(()=>{retrying=false;}),Math.min(5000,900*health.recoveries));
 };
 const watchdogCheck=()=>{
@@ -181,14 +180,14 @@ const watchdogCheck=()=>{
         const host=mountedHost,shadow=host&&host.shadowRoot,main=shadow&&shadow.querySelector('main'),rect=host&&host.getBoundingClientRect();
         const ok=!!host&&host.isConnected&&!!shadow&&!!main&&rect.width>240&&rect.height>240;
         mark('watchdog',ok);
-        if(!ok)throw Error('watchdog unhealthy mount');
+        if(!ok)throw Error('監視対象の表示が正常ではありません');
     }catch(e){scheduleRecovery(e);}
 };
 const startWatchers=()=>{
     stopWatchers();
     watchdog=setInterval(watchdogCheck,cfg.watchdogMs);
     setTimeout(watchdogCheck,2200);
-    observer=new MutationObserver(()=>{if(health.status==='healthy'&&(!mountedHost||!mountedHost.isConnected))scheduleRecovery('host removed');});
+    observer=new MutationObserver(()=>{if(health.status==='healthy'&&(!mountedHost||!mountedHost.isConnected))scheduleRecovery('表示ホストが削除されました');});
     observer.observe(document.documentElement,{childList:true,subtree:true});
 };
 const mount=async(isRecovery=false)=>{
@@ -206,21 +205,21 @@ const mount=async(isRecovery=false)=>{
     rewriteHtml(doc,current,assetBase);
     const host=document.createElement('div');host.id='rev-project-host';host.dataset.revVersion=VERSION;host.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#070305;overflow:auto;overscroll-behavior:contain;visibility:hidden;opacity:0;pointer-events:none;contain:layout paint style;';
     const shadow=host.attachShadow({mode:'open'}),style=document.createElement('style');
-    style.textContent=':host{all:initial;display:block;color-scheme:dark;--bg:#070305;--bg2:#0d0509;--panel:#13070d;--panel2:#1d0a12;--text:#fff5f8;--muted:#b99da7;--line:rgba(255,82,126,.18);--hot:#ff2f68;--rose:#ff5f8f;--acid:#ff9fba;--scarlet:#d80b42;--blush:#ffd2df;--wine:#4b071f;--max:1280px;--display:Orbitron,Inter,ui-sans-serif,system-ui,sans-serif;font-family:Inter,Poppins,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:var(--text);line-height:1.6}.rev-shadow-body{min-height:100vh;background:radial-gradient(circle at 50% -20%,#2c0717 0,#0d0509 35%,#070305 70%)}*{box-sizing:border-box}'+rewriteCss(c.text,assetBase+'assets/store.css')+'\n#rev-native-exit{position:fixed;left:14px;bottom:14px;z-index:2147483647;padding:9px 12px;border:1px solid rgba(255,95,143,.45);border-radius:999px;background:rgba(7,3,5,.92);color:#ffd5e1;font:700 12px/1.2 Tahoma,Arial,sans-serif;text-decoration:none;box-shadow:0 8px 28px rgba(0,0,0,.35)}';
+    style.textContent=':host{all:initial;display:block;color-scheme:dark;--bg:#070305;--bg2:#0d0509;--panel:#13070d;--panel2:#1d0a12;--text:#fff5f8;--muted:#b99da7;--line:rgba(255,82,126,.18);--hot:#ff2f68;--rose:#ff5f8f;--acid:#ff9fba;--scarlet:#d80b42;--blush:#ffd2df;--wine:#4b071f;--max:1280px;--display:"Noto Sans JP","Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;font-family:"Noto Sans JP","Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:var(--text);line-height:1.75}.rev-shadow-body{min-height:100vh;background:radial-gradient(circle at 50% -20%,#2c0717 0,#0d0509 35%,#070305 70%)}*{box-sizing:border-box}'+rewriteCss(c.text,assetBase+'assets/store.css')+'\n#rev-native-exit{position:fixed;left:14px;bottom:14px;z-index:2147483647;padding:9px 12px;border:1px solid rgba(255,95,143,.45);border-radius:999px;background:rgba(7,3,5,.92);color:#ffd5e1;font:700 12px/1.2 "Noto Sans JP","Yu Gothic",sans-serif;text-decoration:none;box-shadow:0 8px 28px rgba(0,0,0,.35)}';
     const shell=document.createElement('div');shell.className='rev-shadow-body';shell.innerHTML=doc.body.innerHTML;
-    const exit=document.createElement('a');exit.id='rev-native-exit';exit.href=BLOG+'?native=1';exit.textContent='NOVA6 BLOG';
+    const exit=document.createElement('a');exit.id='rev-native-exit';exit.href=BLOG+'?native=1';exit.textContent='NOVA6 ブログ';
     shadow.append(style,shell,exit);wire(shadow);mountedHost=host;document.body.appendChild(host);
     try{
         await visualCheck(host,shadow);
         host.style.visibility='visible';host.style.opacity='1';host.style.pointerEvents='auto';
-        health.status='healthy';health.source=h.source+' / '+c.source;health.mountedAt=Date.now();health.lastCheck=Date.now();document.title=doc.title||'Project Rev Market';window.__REV_WIDGET_READY__=VERSION;mark('commit',true,health.source);startWatchers();
+        health.status='healthy';health.source=h.source+' / '+c.source;health.mountedAt=Date.now();health.lastCheck=Date.now();document.title=doc.title||'Project Rev マーケット';window.__REV_WIDGET_READY__=VERSION;mark('commit',true,health.source);startWatchers();
     }catch(e){rollback(e);throw e;}
 };
-window.REV_WIDGET_RECOVER=()=>{if(terminal(health.status))return false;scheduleRecovery('manual');return true;};
-window.REV_WIDGET_DISABLE_SESSION=()=>{sessionSet('rev:disable','1');rollback('session disabled');health.status='safe-mode';stopWatchers();return true;};
+window.REV_WIDGET_RECOVER=()=>{if(terminal(health.status))return false;scheduleRecovery('手動復旧');return true;};
+window.REV_WIDGET_DISABLE_SESSION=()=>{sessionSet('rev:disable','1');rollback('このセッションでは無効化されました');health.status='safe-mode';stopWatchers();return true;};
 window.REV_WIDGET_CLEAR_CACHE=()=>{try{Object.keys(localStorage).filter(k=>k.startsWith(LS)).forEach(k=>localStorage.removeItem(k));return true;}catch(e){return false;}};
 const domReady=()=>document.body?Promise.resolve():new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
-addEventListener('online',()=>{if(health.status!=='healthy'&&!terminal(health.status))scheduleRecovery('online');});
+addEventListener('online',()=>{if(health.status!=='healthy'&&!terminal(health.status))scheduleRecovery('オンライン復帰');});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')watchdogCheck();});
-domReady().then(()=>mount(false)).catch(e=>{rollback(e);health.status='failed-safe';console.error('[ProjectRev widget v3]',e);});
+domReady().then(()=>mount(false)).catch(e=>{rollback(e);health.status='failed-safe';console.error('[ProjectRev ウィジェット v3]',e);});
 })();
