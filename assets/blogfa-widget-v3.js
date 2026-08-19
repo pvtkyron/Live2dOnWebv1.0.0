@@ -1,7 +1,7 @@
 (()=>{
 if(window.__REV_BLOGFA_WIDGET_V3__)return;
 window.__REV_BLOGFA_WIDGET_V3__=1;
-const VERSION='2026.08.20.1';
+const VERSION='2026.08.20.2';
 const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0';
 const BLOG=(location.origin+location.pathname).replace(/\/$/,'');
 const params=new URLSearchParams(location.search);
@@ -117,7 +117,7 @@ const getAsset=async(p,ps,cfg,kind)=>{
     }
     throw last||Error('取得元が見つかりません: '+p);
 };
-const rewriteCss=(css,base)=>css.replace(/url\(\s*(['"]?)([^'"\)]+)\1\s*\)/g,(m,q,v)=>{const raw=String(v||'').trim();if(!raw||/^(data:|https?:|#)/i.test(raw))return m;try{return 'url("'+new URL(raw,base).href+'")';}catch(e){return m;}});
+const rewriteCss=(css,base)=>css.replace(/url\(\s*(['"]?)([^'"\)]+)\1\s*\)/g,(m,q,v)=>{const raw=String(v||'').trim();if(!raw||/^(data:|https?:|#)/i.test(raw))return m;try{return 'url("'+new URL(raw,base).href+'")';}catch(e){return m;}}).replace(/content:\s*["']REV\s*\/\s*SIGNAL\s*\/\s*26["']/gi,'content:"REV / シグナル / 26"');
 const internalRoute=(href,current)=>{
     if(!href||href[0]==='#'||/^(mailto:|tel:|javascript:)/i.test(href)||/^https:\/\/t\.me\//i.test(href))return null;
     try{
