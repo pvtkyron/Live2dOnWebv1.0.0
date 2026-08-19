@@ -64,3 +64,6 @@ jobs:
 
       - name: Blogfaレスポンシブを検証
         run: npm run check:blogfa
+
+      - name: プレミアム軽量タイポグラフィを検証
+        run: npm run check:type

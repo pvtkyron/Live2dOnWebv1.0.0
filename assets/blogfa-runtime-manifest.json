@@ -1,5 +1,5 @@
 {
-  "version": "2026.08.20.3-ja-responsive",
+  "version": "2026.08.20.4-ja-typography",
   "enabled": true,
   "widget": "assets/blogfa-widget-v3.js",
   "minHtmlBytes": 700,
@@ -9,5 +9,5 @@
   "cacheTtlMs": 604800000,
   "staleCacheTtlMs": 2592000000,
   "healthGraceMs": 11000,
-  "release": "stable-ja-responsive"
+  "release": "stable-ja-typography"
 }
