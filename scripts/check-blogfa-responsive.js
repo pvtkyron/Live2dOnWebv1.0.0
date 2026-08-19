@@ -17,7 +17,8 @@ test('タッチ端末',/pointer:coarse/.test(css));
 test('低モーション',/prefers-reduced-motion:reduce/.test(css));
 test('高コントラスト',/prefers-contrast:more/.test(css));
 test('印刷表示',/@media print/.test(css));
-test('Live2Dモバイル縮小',/#waifu[^{]*\{[^}]*transform-origin/.test(css)&&/transform:scale\(\.56\)/.test(css));
+test('Live2Dキャンバスだけ縮小',/#waifu canvas/.test(css)&&/width:min\(245px,58vw\)/.test(css)&&!/transform:scale\(/.test(css));
+test('Live2D実タッチ領域',/\.waifu-tool>span\{min-width:44px;min-height:44px/.test(css));
 test('ネイティブ記事レスポンシブ',/\.native-layout/.test(css)&&/\.native-sidebar/.test(css));
 test('埋め込みレスポンシブ',/\.native-body iframe/.test(css)&&/aspect-ratio:16\/9/.test(css));
 
