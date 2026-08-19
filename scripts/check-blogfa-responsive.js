@@ -29,6 +29,7 @@ test('追加ノードだけ強化',/MutationObserver/.test(js)&&/enhance\(n\)/.t
 test('画像遅延読み込み',/loading='lazy'/.test(js));
 test('Live2Dキーボード操作',/tabindex/.test(js)&&/aria-label/.test(js));
 test('viewport-fit cover',/viewport-fit=cover/.test(js)&&/interactive-widget=resizes-content/.test(js));
+test('生成テキスト日本語化',/遊ぶ \/ 読む \/ 選ぶ/.test(js)&&/遊ぶ \/ 読む \/ 選ぶ/.test(css));
 
 const responsiveBoot=entry.indexOf('await load(RESPONSIVE');
 const supervisorBoot=entry.indexOf('await load(SUPERVISOR');
@@ -36,6 +37,8 @@ test('入口がレスポンシブを先に起動',responsiveBoot>=0&&supervisorB
 test('入口キャッシュ移行v3',/rev:ja:20260820:3/.test(entry));
 test('supervisor冗長CSS',/blogfa-responsive\.css/.test(supervisor));
 test('supervisor冗長runtime',/blogfa-responsive\.js/.test(supervisor));
+test('Live2Dをidle遅延起動',/requestIdleCallback/.test(supervisor)&&/await deferLive2d\(\)/.test(supervisor));
+test('端末状況別Live2D方針',/max-width:680px/.test(supervisor)&&/saveData/.test(supervisor));
 test('BlogCustomHtmlが全テンプレートに存在',(template.match(/<-BlogCustomHtml->/g)||[]).length>=3);
 
 const failed=checks.filter(([,ok])=>!ok);
