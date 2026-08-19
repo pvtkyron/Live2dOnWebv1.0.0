@@ -1,4 +1,4 @@
-name: Static integrity
+name: 静的整合性検証
 
 on:
   pull_request:
@@ -12,11 +12,11 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: リポジトリをチェックアウト
         uses: actions/checkout@v6
-      - name: Setup Node
+      - name: Node.jsをセットアップ
         uses: actions/setup-node@v6
         with:
           node-version: 22
-      - name: Validate local links and sitemap routes
+      - name: ローカルリンクとサイトマップのルートを検証
         run: node scripts/validate-static-site.js
