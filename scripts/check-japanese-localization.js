@@ -6,8 +6,9 @@ const files=[
   'index.html','shop.html','journal.html','about.html','faq.html','404.html','sitemap.html','site.webmanifest','waifu-tips.json',
   'products/rev-core.html','products/rev-studio.html','products/rev-toolkit.html','products/rev-vault.html','products/rev-priority.html','products/rev-bundle.html',
   'posts/buyer-guide.html','posts/github-first.html','posts/project-rev-standard.html','posts/pubg-player-market-guide.html',
-  'assets/store.js','assets/blogfa-bootstrap.js','assets/blogfa-supervisor.js','assets/blogfa-widget-v3.js','assets/blogfa-live2d-addon.js',
-  'blogfa-final-template.html','README.md','CONTRIBUTING.md','SECURITY.md',
+  'assets/store.js','assets/blogfa-bootstrap.js','assets/blogfa-supervisor.js','assets/blogfa-widget.js','assets/blogfa-widget-v2.js','assets/blogfa-widget-v3.js','assets/blogfa-live2d-addon.js',
+  'blogfa-bootstrap-template.html','blogfa-final-template.html','blogfa-custom-html-snippet.html',
+  'README.md','CONTRIBUTING.md','SECURITY.md','.github/pull_request_template.md','.github/workflows/ci.yml','.github/workflows/static-integrity.yml',
   'docs/ARCHITECTURE.md','docs/BLOGFA_RUNTIME.md','docs/DEPLOYMENT.md','docs/LIVE2D_MAINTENANCE.md','docs/TROUBLESHOOTING.md'
 ];
 
@@ -22,13 +23,16 @@ const banned=[
   [/\bSOURCE\s*\+\s*HUMAN\b/g,'英語の情報源見出し'],
   [/\bPUBG\s+PLAYER\s+GUIDE\b/g,'英語のPUBG見出し'],
   [/\bBUILD\s+NOTES\b/g,'英語の開発ノート見出し'],
+  [/\bBLOGFA\s+ARCHIVE\b/g,'英語のBlogfaアーカイブ見出し'],
   [/>\s*Home\s*</g,'英語のホーム'],
   [/>\s*Shop\s*</g,'英語のストア'],
   [/>\s*Journal\s*</g,'英語のジャーナル'],
   [/>\s*About\s*</g,'英語のAbout'],
   [/>\s*FAQ\s*</g,'英語のFAQ'],
   [/Toggle menu/gi,'英語のメニューaria'],
-  [/Open navigation|Close navigation/gi,'英語のナビゲーションaria']
+  [/Open navigation|Close navigation/gi,'英語のナビゲーションaria'],
+  [/The market source did not arrive/gi,'英語のフォールバック本文'],
+  [/Build and validate|Static integrity|Checkout repository|Validate runtime JSON/g,'英語のActions表示名']
 ];
 
 const errors=[];
