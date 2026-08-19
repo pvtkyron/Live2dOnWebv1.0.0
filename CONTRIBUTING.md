@@ -1,32 +1,33 @@
-# Contributing
+# コントリビュート
 
-Keep changes small, testable and easy to review.
+変更は小さく、テスト可能で、レビューしやすく保ってください。
 
-## Setup
+## セットアップ
 
 ```bash
 npm install
 npm start
 ```
 
-For a production bundle:
+本番バンドル:
 
 ```bash
 npm run build:prod
 ```
 
-## Pull requests
+## Pull Request
 
-- Create a focused branch from `master`.
-- Keep unrelated visual, runtime, content and generated-bundle changes separate.
-- Describe what changed, why it changed and how it was checked.
-- Preserve the native Blogfa fallback behavior when editing Blogfa integration code.
-- When changing a public route, verify navigation and related sitemap/canonical metadata as appropriate.
-- When changing Live2D runtime source, note whether `dist/` was regenerated.
-- Avoid committing local caches, editor state or temporary build output.
+- `master`から目的を絞ったブランチを作成する。
+- 無関係な見た目、ランタイム、コンテンツ、生成バンドルの変更を混ぜない。
+- 何を、なぜ変更し、どう確認したかを書く。
+- Blogfa連携を編集するときはネイティブfallbackを維持する。
+- 公開ルート変更時はナビゲーション、サイトマップ、canonicalを確認する。
+- Live2Dランタイムソース変更時は`dist/`を再生成したか明記する。
+- ローカルキャッシュ、エディタ状態、一時ビルド出力をコミットしない。
+- 公開UIの新規テキストは原則として日本語で追加する。
 
-## Before merging
+## マージ前
 
-At minimum, check the affected static pages in a browser. For JavaScript changes, verify that the edited files parse successfully and exercise the affected route or integration path.
+最低限、影響する静的ページをブラウザで確認してください。JavaScript変更では構文エラーがないことと、対象ルート/連携経路が動くことを確認します。
 
-Changes that touch the Blogfa bootstrap/supervisor should also confirm that failure of the remote storefront layer does not hide or break the native Blogfa surface.
+Blogfa bootstrap/supervisorを触った場合、リモートストア層が失敗してもBlogfaネイティブ面が隠れたり壊れたりしないことも確認してください。

@@ -1,70 +1,54 @@
-# Live2D Maintenance Guide
+# Live2D 保守ガイド
 
-## Repository layout
+## 構成
 
-The repository contains multiple generations of Live2D runtime code and model assets:
+- `src/SDKv2/` — legacy SDKv2 runtime
+- `src/SDKv4/` — SDKv4 runtime/framework
+- `model/` — model definition、texture、motion、sound
+- `dist/live2d_bundle.js` — 公開ページ用browser bundle
+- `dist/live2d_bundle.js.gz`, `.br` — 圧縮版
+- `waifu-tips.js`, `waifu-tips.json` — マスコット動作/日本語コンテンツ
+- `assets/waifu.css` — 表示
+- `assets/waifu-route.js` — route bootstrap glue
 
-- `src/SDKv2/` — legacy SDKv2 runtime path;
-- `src/SDKv4/` — SDKv4 runtime/framework path;
-- `model/` — model definitions, textures, motions and sounds;
-- `dist/live2d_bundle.js` — browser bundle consumed by public pages;
-- `dist/live2d_bundle.js.gz` and `.br` — compressed bundle variants;
-- `waifu-tips.js` / `waifu-tips.json` — mascot behavior/content layer;
-- `assets/waifu.css` — mascot presentation;
-- `assets/waifu-route.js` — route-level mascot bootstrap glue.
+## モデル変更前
 
-## Before changing a model
+まずSDK世代を特定してください。SDKv2とSDKv4のモデル形式は互換ではありません。モデルJSON、binary、texture、motion、physics、soundを一緒に管理します。
 
-Identify the model generation first. SDKv2 and SDKv4 model formats are not interchangeable. Keep each model's JSON definition, binary model file, textures, motions, physics and sounds together.
+テクスチャ交換/最適化時:
 
-When replacing or optimizing a texture:
+- モデル定義が対応するサイズを維持する。
+- transparencyを維持する。
+- 全texture pathを確認する。
+- alternate format削除前に元形式をテストする。
+- 透明edgeに継ぎ目が出るlossy変換を避ける。
 
-- keep dimensions supported by the model definition;
-- preserve transparency;
-- verify every referenced texture path;
-- test the original format before removing an alternate format;
-- avoid lossy conversion when it creates visible seams around transparent edges.
+## ソースと生成物
 
-## Source versus generated output
+`src/`はauthored runtime source、`dist/`は生成browser outputとして分離します。本番挙動に影響するsource変更はbundle再生成を伴いますが、無関係なコンテンツ変更でbundleを再生成しないでください。
 
-Treat `src/` as authored runtime source and `dist/` as generated browser output. A source change that affects production should be accompanied by a rebuilt bundle, but unrelated content changes should not regenerate the bundle.
+## 本番検証
 
-This separation keeps diffs reviewable and avoids accidental bundle churn.
+1. 本番ビルド。
+2. canonicalホームとnested routeを開く。
+3. canvasがconsole errorなしで初期化されることを確認。
+4. 対応していればmotion/expressionを1つ以上実行。
+5. close/reopenを確認。
+6. マスコット初期化失敗でもサイトが動くことを確認。
+7. narrow mobileでoverflow/touch干渉を確認。
 
-## Production validation
+## パフォーマンス
 
-After a Live2D-affecting change:
+- runtime対応の圧縮画像代替を維持する。
+- 全model/motion/soundをglobal preloadしない。
+- route UI変更ごとにruntimeを再構築しない。
+- optional integration破棄時にtimer/listener/observerを解放する。
+- reduced-motionでは装飾motionを無効化する。
 
-1. run the production build;
-2. load the canonical homepage and at least one nested route;
-3. verify the mascot canvas initializes without console errors;
-4. switch or trigger at least one motion/expression where supported;
-5. verify close/reopen controls;
-6. verify the site still works if the mascot fails to initialize;
-7. check a narrow mobile viewport for overflow and touch interference.
+## 互換性
 
-## Performance rules
+SDKv4があるからという理由だけでSDKv2を削除しないでください。古いruntimeに依存する公開モデル/ルートがないことを先に確認します。Cubism framework更新もcore/runtime互換性を無視して単独更新しないでください。
 
-Model assets can dominate page weight. Prefer optimizations that reduce transfer/decode cost without changing model identity:
+## ライセンス
 
-- retain appropriately compressed image alternatives where the runtime supports them;
-- do not preload every model, motion or sound globally;
-- avoid repeatedly constructing the runtime on route-level UI changes;
-- release timers/listeners/observers when an optional integration is torn down;
-- keep decorative pointer/motion effects disabled for reduced-motion users.
-
-## Compatibility rules
-
-When modernizing code, do not silently remove SDKv2 support merely because SDKv4 also exists. First confirm no public model or route still depends on the older runtime.
-
-Likewise, do not upgrade the bundled Cubism framework independently of its core/runtime compatibility assumptions without testing representative models.
-
-## Failure boundary
-
-The mascot is an enhancement. Its failure must never prevent storefront navigation, product content, journal content or Blogfa fallback from working.
-
-If a Live2D change causes a blank page, global exception loop or permanent overlay, treat that as a release-blocking regression even if the mascot itself works.
-
-## Licensing
-
-Preserve upstream license, changelog and redistributable notices under the SDK trees. New model assets should only be added when their redistribution rights are known and compatible with the repository's intended public use.
+SDKツリーのupstream license、changelog、redistributable noticeは改変せず維持してください。新しいモデルは再配布権が明確な場合だけ追加します。

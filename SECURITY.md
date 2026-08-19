@@ -1,28 +1,28 @@
-# Security Policy
+# セキュリティポリシー
 
-## Supported surface
+## 対象範囲
 
-Security reports should focus on the Project Rev storefront/runtime maintained in this repository: the public HTML routes, `assets/` runtime scripts, Blogfa integration layers, and the packaged Live2D browser bundle.
+報告対象は、このリポジトリで保守するProject Revのストア/ランタイムです。公開HTMLルート、`assets/`のランタイムスクリプト、Blogfa連携レイヤー、パッケージ済みLive2Dブラウザバンドルを含みます。
 
-Third-party Live2D SDK/model files under `src/SDKv2`, `src/SDKv4`, and `model/` may have their own upstream ownership and licensing. Reports that only affect an upstream dependency should be reported upstream as well.
+`src/SDKv2`、`src/SDKv4`、`model/`以下の第三者SDK/モデルには、それぞれ上流の所有者とライセンスがあります。上流依存関係だけに影響する問題は上流にも報告してください。
 
-## Reporting a vulnerability
+## 脆弱性の報告
 
-Please do not publish exploit details, private tokens, credentials, or sensitive user data in a public issue or pull request.
+公開IssueやPull Requestに、exploit詳細、秘密トークン、認証情報、機微なユーザーデータを投稿しないでください。
 
-For a suspected vulnerability, contact the Project Rev maintainer privately first and include:
+疑わしい脆弱性はまずProject Revのメンテナーへ非公開で連絡し、可能なら以下を含めてください。
 
-- affected file or route;
-- reproduction steps;
-- expected versus actual behavior;
-- browser/runtime version;
-- impact assessment;
-- a minimal proof of concept when safe to share.
+- 影響するファイル/ルート
+- 再現手順
+- 期待する挙動と実際の挙動
+- ブラウザ/ランタイムのバージョン
+- 影響評価
+- 安全に共有できる最小PoC
 
-The public contact lane linked by the site is acceptable for initial contact. Sensitive material should only be shared after a private channel has been established.
+サイトに掲載されている公開窓口は最初の連絡に使用できます。機微な内容は非公開チャネル確立後に共有してください。
 
-## Scope notes
+## 注意事項
 
-The repository is static-first and must remain usable when optional remote integrations fail. Security fixes should preserve that failure-isolation model and avoid introducing new secret-bearing client-side configuration.
+このリポジトリは静的ファーストで、任意のリモート連携が失敗しても利用できる必要があります。セキュリティ修正でもこの障害分離を維持し、秘密情報を持つクライアント設定を追加しないでください。
 
-Never commit API tokens, private keys, session cookies, payment credentials, or production-only secrets to this repository.
+APIトークン、秘密鍵、セッションCookie、決済認証情報、本番専用secretを絶対にコミットしないでください。
