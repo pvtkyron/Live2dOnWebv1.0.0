@@ -1,12 +1,12 @@
 {
-  "name":"Project Rev Market",
+  "name":"Project Rev マーケット",
   "short_name":"Project Rev",
-  "description":"GitHub-fed Project Rev storefront, journal and buyer guides.",
+  "description":"GitHubを情報源とするProject Revのストア、ジャーナル、購入ガイド。",
   "start_url":"./",
   "scope":"./",
   "display":"standalone",
   "background_color":"#07070b",
   "theme_color":"#ff4f8b",
-  "lang":"en",
+  "lang":"ja",
   "dir":"ltr"
 }
