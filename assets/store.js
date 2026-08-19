@@ -1,6 +1,7 @@
 (()=>{
 if(window.__REV_STORE_UI__)return;
 window.__REV_STORE_UI__=1;
+const __revStoreScript=document.currentScript,__revStoreBase=new URL('./',__revStoreScript&&__revStoreScript.src||location.href);if(!document.querySelector('script[data-rev-discovery]')){const s=document.createElement('script');s.src=new URL('rev-discovery.js',__revStoreBase).href;s.defer=true;s.dataset.revDiscovery='1';document.head.appendChild(s)}
 document.documentElement.classList.add('js-enhanced');
 const $=(q,r=document)=>r.querySelector(q),$$=(q,r=document)=>[...r.querySelectorAll(q)];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
