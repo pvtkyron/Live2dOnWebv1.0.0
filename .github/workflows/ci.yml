@@ -70,3 +70,6 @@ jobs:
 
       - name: REV vNext discovery / performance を検証
         run: npm run check:vnext
+
+      - name: Project Rev Editorial再設計を検証
+        run: npm run check:editorial
