@@ -4,7 +4,7 @@
   "private": true,
   "description": "Project Revの静的ストア、Blogfa互換ランタイム、Live2D Web表示レイヤー。",
   "homepage": "https://pvtkyron.github.io/Live2dOnWebv1.0.0/",
-  "repository": {"type": "git", "url": "https://github.com/pvtkyron/Live2dOnWebv1.0.0.git"},
+  "repository": {"type":"git","url":"https://github.com/pvtkyron/Live2dOnWebv1.0.0.git"},
   "keywords": ["live2d","project-rev","static-site","blogfa","storefront"],
   "scripts": {
     "start": "webpack-dev-server --progress --devtool inline-source-map",
@@ -15,6 +15,7 @@
     "check:blogfa": "node scripts/check-blogfa-responsive.js",
     "check:type": "node scripts/check-typography.js",
     "check:vnext": "node scripts/check-rev-vnext.js",
+    "check:editorial": "node scripts/check-editorial-redesign.js",
     "serve": "serve -p 5001",
     "clean": "rimraf dist",
     "cf:dev": "npx wrangler@latest dev",
