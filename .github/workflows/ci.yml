@@ -67,3 +67,6 @@ jobs:
 
       - name: プレミアム軽量タイポグラフィを検証
         run: npm run check:type
+
+      - name: REV vNext discovery / performance を検証
+        run: npm run check:vnext

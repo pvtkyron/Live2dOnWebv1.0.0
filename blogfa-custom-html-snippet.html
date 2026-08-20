@@ -3,11 +3,11 @@
 (()=>{
 if(window.__REV_ENTRY_LOADER__)return;
 window.__REV_ENTRY_LOADER__=1;
-const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',SUPERVISOR='assets/blogfa-supervisor.js',RESPONSIVE='assets/blogfa-responsive.js';
-const KEY='rev:entry:supervisor',RKEY='rev:entry:responsive',MIGRATION='rev:ja:20260820:4';
+const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',SUPERVISOR='assets/blogfa-supervisor.js',RESPONSIVE='assets/blogfa-responsive.js',DISCOVERY='assets/rev-discovery.js';
+const KEY='rev:entry:supervisor',RKEY='rev:entry:responsive',DKEY='rev:entry:discovery',MIGRATION='rev:ja:20260820:4';
 try{
     if(localStorage.getItem(MIGRATION)!=='1'){
-        Object.keys(localStorage).filter(k=>k===KEY||k===RKEY||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));
+        Object.keys(localStorage).filter(k=>k===KEY||k===RKEY||k===DKEY||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));
         localStorage.setItem(MIGRATION,'1');
         console.info('[ProjectRev] 表示キャッシュを更新しました');
     }
@@ -33,6 +33,7 @@ const load=async(file,key,marker,source)=>{
 };
 const boot=async()=>{
     await load(RESPONSIVE,RKEY,'__REV_RESPONSIVE_RUNTIME__','rev-blogfa-responsive.js');
+    await load(DISCOVERY,DKEY,'__REV_DISCOVERY__','rev-discovery.js');
     if(await load(SUPERVISOR,KEY,'__REV_STABLE_SUPERVISOR__','rev-blogfa-supervisor.js'))return;
     console.warn('[ProjectRev 入口] すべての取得元に失敗しました。Blogfaのネイティブ表示を維持します');
 };
