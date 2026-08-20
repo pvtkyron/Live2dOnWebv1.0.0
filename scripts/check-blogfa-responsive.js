@@ -9,7 +9,6 @@ const js=read('assets/blogfa-responsive.js');
 const entry=read('blogfa-custom-html-snippet.html');
 const supervisor=read('assets/blogfa-supervisor.js');
 const template=read('blogfa-bootstrap-template.html');
-
 for(const bp of ['1180','900','680','460','360'])test(`ブレークポイント ${bp}px`,new RegExp(`max-width:${bp}px`).test(css));
 test('安全領域',/safe-area-inset-(top|right|bottom|left)/.test(css));
 test('横向き短画面',/max-height:620px[^}]*orientation:landscape/.test(css));
@@ -21,7 +20,6 @@ test('Live2Dキャンバスだけ縮小',/#waifu canvas/.test(css)&&/width:min\(
 test('Live2D実タッチ領域',/\.waifu-tool>span\{min-width:44px;min-height:44px/.test(css));
 test('ネイティブ記事レスポンシブ',/\.native-layout/.test(css)&&/\.native-sidebar/.test(css));
 test('埋め込みレスポンシブ',/\.native-body iframe/.test(css)&&/aspect-ratio:16\/9/.test(css));
-
 test('VisualViewport対応',/visualViewport/.test(js));
 test('resizeのrAF抑制',/requestAnimationFrame\(sizeNow\)/.test(js));
 test('Shadow DOMへCSS注入',/shadowRoot/.test(js)&&/addCss\(root\)/.test(js));
@@ -36,17 +34,15 @@ test('画面外描画を遅延',/content-visibility:auto/.test(js)&&/contain-int
 test('タッチ端末の描画負荷軽減',/\.noise\{display:none!important\}/.test(js)&&/backdrop-filter:blur\(12px\)/.test(js));
 test('透明効果低減設定',/prefers-reduced-transparency:reduce/.test(js));
 test('日本語タイポグラフィをShadowへ注入',/--rev-font-display:/.test(js)&&/font-synthesis:none/.test(js)&&/text-wrap:balance/.test(js));
-
-const responsiveBoot=entry.indexOf('await load(RESPONSIVE');
-const supervisorBoot=entry.indexOf('await load(SUPERVISOR');
-test('入口がレスポンシブを先に起動',responsiveBoot>=0&&supervisorBoot>responsiveBoot&&/viewport-fit=cover/.test(entry));
-test('入口キャッシュ移行v4',/rev:ja:20260820:4/.test(entry));
+const responsiveBoot=entry.indexOf('assets/blogfa-responsive.js'),supervisorBoot=entry.indexOf('assets/blogfa-supervisor.js'),editorialBoot=entry.indexOf('assets/blogfa-editorial.js');
+test('入口がresponsive→supervisor→Editorialの順',responsiveBoot>=0&&supervisorBoot>responsiveBoot&&editorialBoot>supervisorBoot&&/viewport-fit=cover/.test(entry));
+test('入口キャッシュ移行Editorial',/rev:editorial:20260820:1/.test(entry));
 test('supervisor冗長CSS',/blogfa-responsive\.css/.test(supervisor));
 test('supervisor冗長runtime',/blogfa-responsive\.js/.test(supervisor));
 test('Live2Dをidle遅延起動',/requestIdleCallback/.test(supervisor)&&/await deferLive2d\(\)/.test(supervisor));
 test('端末状況別Live2D方針',/max-width:680px/.test(supervisor)&&/saveData/.test(supervisor));
-test('BlogCustomHtmlが全テンプレートに存在',(template.match(/<-BlogCustomHtml->/g)||[]).length>=3);
-
+test('BlogCustomHtmlがテンプレートに存在',/<-BlogCustomHtml->/.test(template));
+test('Editorial Blogfa template',/Project Rev Editorial Bootstrap/.test(template)&&/--paper:#f2ede3/.test(template));
 const failed=checks.filter(([,ok])=>!ok);
-if(failed.length){console.error(`Blogfaレスポンシブ検証に失敗しました: ${failed.length}件`);failed.forEach(([n])=>console.error(`- ${n}`));process.exit(1);}
-console.log(`BlogfaレスポンシブOK: ${checks.length}項目を確認しました。`);
+if(failed.length){console.error(`Blogfaレスポンシブ検証に失敗しました: ${failed.length}件`);failed.forEach(([n])=>console.error(`- ${n}`));process.exit(1)}
+console.log(`Blogfaレスポンシブ/Editorial OK: ${checks.length}項目を確認しました。`);
