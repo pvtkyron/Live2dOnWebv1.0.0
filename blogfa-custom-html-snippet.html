@@ -1,42 +1,11 @@
-<!-- Project Rev 安定ブートストラップ。BlogfaのカスタムHTML/JavaScriptに一度だけ貼り付けます。 -->
+<!-- Project Rev Editorial entry: Blogfa custom HTML -->
 <script>
 (()=>{
-if(window.__REV_ENTRY_LOADER__)return;
-window.__REV_ENTRY_LOADER__=1;
-const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',SUPERVISOR='assets/blogfa-supervisor.js',RESPONSIVE='assets/blogfa-responsive.js',DISCOVERY='assets/rev-discovery.js';
-const KEY='rev:entry:supervisor',RKEY='rev:entry:responsive',DKEY='rev:entry:discovery',MIGRATION='rev:ja:20260820:4';
-try{
-    if(localStorage.getItem(MIGRATION)!=='1'){
-        Object.keys(localStorage).filter(k=>k===KEY||k===RKEY||k===DKEY||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));
-        localStorage.setItem(MIGRATION,'1');
-        console.info('[ProjectRev] 表示キャッシュを更新しました');
-    }
-}catch(e){}
-const viewport=()=>{let m=document.querySelector('meta[name="viewport"]');if(!m){m=document.createElement('meta');m.name='viewport';document.head.appendChild(m);}m.content='width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content';};
-viewport();document.documentElement.lang='ja';
-const preconnect=href=>{if(document.head.querySelector('link[rel="preconnect"][href="'+href+'"]'))return;const l=document.createElement('link');l.rel='preconnect';l.href=href;l.crossOrigin='anonymous';document.head.appendChild(l);};
-preconnect('https://cdn.jsdelivr.net');preconnect('https://api.github.com');
-const fetchText=async(url,headers={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);try{const r=await fetch(url,{cache:'no-store',headers,signal:c.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.text();}finally{clearTimeout(t);}};
-const exec=(code,marker,source)=>{if(typeof code!=='string'||!code.includes(marker))throw Error('無効な実行コード');const s=document.createElement('script');s.text=code+'\n//# sourceURL='+source;document.head.appendChild(s);};
-const cached=(key,marker)=>{try{const x=localStorage.getItem(key);return x&&x.includes(marker)?x:null;}catch(e){return null;}};
-const save=(key,code,marker)=>{try{if(code&&code.includes(marker))localStorage.setItem(key,code);}catch(e){}};
-const load=async(file,key,marker,source)=>{
-    const urls=[
-        ['jsdelivr','https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+file+'?rev=20260820.4',{}],
-        ['github-api','https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+file+'?ref=master',{Accept:'application/vnd.github.raw+json'}]
-    ];
-    for(const [name,url,headers] of urls){
-        try{const code=await fetchText(url,headers);if(!code.includes(marker))throw Error(name+' の内容が無効です');save(key,code,marker);exec(code,marker,source);return true;}catch(e){console.warn('[ProjectRev '+name+']',e);}
-    }
-    const code=cached(key,marker);if(code){try{exec(code,marker,source);return true;}catch(e){console.warn('[ProjectRev キャッシュ]',e);}}
-    return false;
-};
-const boot=async()=>{
-    await load(RESPONSIVE,RKEY,'__REV_RESPONSIVE_RUNTIME__','rev-blogfa-responsive.js');
-    await load(DISCOVERY,DKEY,'__REV_DISCOVERY__','rev-discovery.js');
-    if(await load(SUPERVISOR,KEY,'__REV_STABLE_SUPERVISOR__','rev-blogfa-supervisor.js'))return;
-    console.warn('[ProjectRev 入口] すべての取得元に失敗しました。Blogfaのネイティブ表示を維持します');
-};
-boot();
+if(window.__REV_ENTRY_LOADER__)return;window.__REV_ENTRY_LOADER__=1;
+const OWNER='pvtkyron',REPO='Live2dOnWebv1.0.0',FILES=[['assets/blogfa-responsive.js','__REV_RESPONSIVE_RUNTIME__'],['assets/blogfa-supervisor.js','__REV_STABLE_SUPERVISOR__'],['assets/blogfa-editorial.js','__REV_EDITORIAL_BLOGFA__']],VERSION='20260820.1',MIGRATION='rev:editorial:20260820:1';
+try{if(localStorage.getItem(MIGRATION)!=='1'){Object.keys(localStorage).filter(k=>k.startsWith('rev:entry:')||k.startsWith('rev:supervisor:')||k.startsWith('rev:v3:')).forEach(k=>localStorage.removeItem(k));localStorage.setItem(MIGRATION,'1')}}catch(e){}
+let v=document.querySelector('meta[name="viewport"]');if(!v){v=document.createElement('meta');v.name='viewport';document.head.appendChild(v)}v.content='width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content';document.documentElement.lang='ja';
+const get=async file=>{const urls=['https://cdn.jsdelivr.net/gh/'+OWNER+'/'+REPO+'@master/'+file+'?rev='+VERSION,'https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+file+'?ref=master'];for(let i=0;i<urls.length;i++){try{const r=await fetch(urls[i],{cache:'no-store',headers:i?{Accept:'application/vnd.github.raw+json'}:{}});if(r.ok)return await r.text()}catch(e){}}throw Error(file+' fetch failed')};
+(async()=>{for(const [file,marker] of FILES){try{const code=await get(file);if(!code.includes(marker))throw Error('invalid '+file);const s=document.createElement('script');s.text=code+'\n//# sourceURL='+file;document.head.appendChild(s)}catch(e){console.warn('[ProjectRev entry]',e)}}})();
 })();
 </script>
